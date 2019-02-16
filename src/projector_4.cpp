@@ -51,7 +51,7 @@ void Callback(const std_msgs::Int16& msg)
              cv::Point2f(0.0 , 0.0),
              cv::Point2f(0.0, 0.0)};
 
-    cv::Mat target = (cv::Mat_<double>(3,4) << 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+    cv::Mat target = (cv::Mat_<double>(4,3) << 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
 
     ros::Rate rate(30);
 
