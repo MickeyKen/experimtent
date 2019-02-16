@@ -92,23 +92,27 @@ void Callback(const std_msgs::Int16& msg)
                cv::Point2f(sin(current_pan), cos(current_pan))};
       for (int i = 0; i < 4; i++) {
         new_dst_pt[i].x = (rot[0].x * dst_pt[i].x) + (rot[0].y * dst_pt[i].y);
-        new_dst_pt[i].y = (rot[1].x * dst_pt[i].x) + (rot[0].y * dst_pt[i].y);
+        new_dst_pt[i].y = (rot[1].x * dst_pt[i].x) + (rot[1].y * dst_pt[i].y);
         //new_dst_pt[i] = cv::Point2f(0.0, 0.0);
       }
       cv::Mat H = cv::getPerspectiveTransform(src_pt,new_dst_pt);
 
       double weight = (0.80 - current_pan) * 362.0;
+      // printf("%f", weight);
       double centroid = -(1650.0 * tan(current_pan));
 
       target.at<double>(0,0) = centroid - 5.0 - weight;
       target.at<double>(0,1) = 1655.0 + weight;
       target.at<double>(0,2) = 1.0;
+
       target.at<double>(1,0) = centroid + 5.0 + weight;
       target.at<double>(1,1) = 1655.0 + weight;
       target.at<double>(1,2) = 1.0;
+
       target.at<double>(2,0) = centroid + 5.0 + weight;
       target.at<double>(2,1) = 1645.0 - weight;
       target.at<double>(2,2) = 1.0;
+
       target.at<double>(3,0) = centroid - 5.0 - weight;
       target.at<double>(3,1) = 1645.0 - weight;
       target.at<double>(3,2) = 1.0;
