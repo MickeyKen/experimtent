@@ -27,6 +27,10 @@ void Callback(const std_msgs::Int16& msg)
     std::string file_dir = ros::package::getPath("experiment_miki") + "/src/image/";
     std::string input_file_path = file_dir + "pop_90.png";
     cv::Mat source_img = cv::imread(input_file_path, cv::IMREAD_UNCHANGED);
+    int ColumnOfNewImage = 1024;
+    int RowsOfNewImage = 768;
+    resize(source_img, source_img, cv::Size(ColumnOfNewImage,RowsOfNewImage));
+
     const cv::Point2f src_pt[]={
              cv::Point2f(0.0, 0.0),
              cv::Point2f(1023.0 , 0.0),
@@ -38,6 +42,7 @@ void Callback(const std_msgs::Int16& msg)
     // pts_src.push_back(cv::Point2f(1023.0 , 767.0));
     // pts_src.push_back(cv::Point2f(0.0, 767.0));
     //printf("x: %f y: %f", src_pt[2].x, src_pt[2].y);
+
     const cv::Point2f dst_pt[]={
              cv::Point2f(-620.0, 2660.0),
              cv::Point2f(620.0 , 2660.0),
@@ -56,6 +61,7 @@ void Callback(const std_msgs::Int16& msg)
     ros::Rate rate(30);
 
     tf::TransformListener listener;
+
     while (ros::ok()) {
 
       n.getParam("exp_miki_img/switch", fin_switch);
@@ -100,10 +106,10 @@ void Callback(const std_msgs::Int16& msg)
       target.at<double>(1,0) = centroid + 5.0 + weight;
       target.at<double>(1,1) = 1655.0 + weight;
       target.at<double>(1,2) = 1.0;
-      target.at<double>(2,0) = centroid - 5.0 - weight;
+      target.at<double>(2,0) = centroid + 5.0 + weight;
       target.at<double>(2,1) = 1645.0 - weight;
       target.at<double>(2,2) = 1.0;
-      target.at<double>(3,0) = centroid + 5.0 + weight;
+      target.at<double>(3,0) = centroid - 5.0 - weight;
       target.at<double>(3,1) = 1645.0 - weight;
       target.at<double>(3,2) = 1.0;
       //std::cout << "target = "<< std::endl << " "  << target << std::endl << std::endl;
@@ -116,17 +122,11 @@ void Callback(const std_msgs::Int16& msg)
         //printf("x: %f , y: %f", new_dst_pt[i].x, new_dst_pt[i].y);
         //std::cout << "g = "<< std::endl << " "  << H.inv() * target.row(i).t() << std::endl << std::endl;
       }
+
+      //printf("\n");
       cv::Mat M = cv::getPerspectiveTransform(src_pt,new_dst_pt);
       cv::warpPerspective( source_img, source_img, M, source_img.size());
-      //std::cout << "g = "<< std::endl << " "  << target << std::endl << std::endl;
-
-
-
-
-
-
-
-
+      // std::cout << "g = "<< std::endl << " "  << M << std::endl << std::endl;
       cv::imshow("screen_4", source_img);
       cv::waitKey(1);
       rate.sleep();
