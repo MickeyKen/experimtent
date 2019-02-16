@@ -10,18 +10,36 @@
 
 int data_base = 0;
 
+
 void Callback(const std_msgs::Int16& msg)
 {
   //std::cout << msg.data << std::endl;
   data_base=msg.data;
+  ros::NodeHandle n;
 
-  std::string file_dir = ros::package::getPath("experiment_miki") + "/src/image/";
-  std::string input_file_path = file_dir + "pop_90.png";
-  cv::Mat source_img = cv::imread(input_file_path, cv::IMREAD_UNCHANGED);
-  cv::imshow("image", source_img);
-  cv::waitKey();
+  int exp_num = 0;
+  int fin_switch = 1;
+  n.getParam("/exp_num", exp_num);
+  n.setParam("exp_miki_img/switch", 1);
 
-  return 0;
+  if (exp_num == 4) {
+    std::string file_dir = ros::package::getPath("experiment_miki") + "/src/image/";
+    std::string input_file_path = file_dir + "pop_90.png";
+    cv::Mat source_img = cv::imread(input_file_path, cv::IMREAD_UNCHANGED);
+
+    ros::Rate rate(30);
+    while (ros::ok()) {
+      cv::imshow("screen_4", source_img);
+      cv::waitKey(1);
+      n.getParam("exp_miki_img/switch", fin_switch);
+      if (fin_switch == 0) {
+        break;
+      }
+      rate.sleep();
+    }
+    cv::destroyWindow("screen_4");
+  }
+
 
 }
 
@@ -32,7 +50,9 @@ int main(int argc, char **argv)
 
   ros::NodeHandle n;
 
-  ros::Subscriber sub = n.subscribe("finish_pantilt", 1000, Callback);
+
+  n.setParam("/exp_num", 1);
+  ros::Subscriber sub = n.subscribe("finish_pantilt", 1000, &Callback);
 
   ros::Rate rate(30);
 
