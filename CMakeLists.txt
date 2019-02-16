@@ -145,6 +145,8 @@ add_executable(hello src/hello.cpp)
 target_link_libraries(hello ${catkin_LIBRARIES})
 add_executable(black_img src/black_img.cpp)
 target_link_libraries(black_img ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
+add_executable(proj_4 src/projector_4.cpp)
+target_link_libraries(proj_4 ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
