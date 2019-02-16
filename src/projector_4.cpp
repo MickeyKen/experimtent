@@ -34,6 +34,7 @@ void Callback(const std_msgs::Int16& msg)
                cv::Point2f(1023.0 , 0.0),
                cv::Point2f(1023.0 , 767.0),
                cv::Point2f(0.0, 767.0)};
+      printf("x: %f y: %f", src_pt[2].x, src_pt[2].y);
       cv::imshow("screen_4", source_img);
       cv::waitKey(1);
       n.getParam("exp_miki_img/switch", fin_switch);
