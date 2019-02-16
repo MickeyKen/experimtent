@@ -70,10 +70,10 @@ void Callback(const std_msgs::Int16& msg)
       tf::Matrix3x3 m(q);
       double roll, pitch, yaw;
       m.getRPY(roll, pitch, yaw);
-      std::cout << "Roll: " << roll << ", Pitch: " << pitch << ", Yaw: " << yaw << std::endl;
+      //std::cout << "Roll: " << roll << ", Pitch: " << pitch << ", Yaw: " << yaw << std::endl;
 
 
-      double current_pan = 0.9;
+      double current_pan = yaw;
       const cv::Point2f rot[]={
                cv::Point2f(cos(current_pan), -sin(current_pan)),
                cv::Point2f(sin(current_pan), cos(current_pan))};
