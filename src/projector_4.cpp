@@ -51,11 +51,8 @@ void Callback(const std_msgs::Int16& msg)
              cv::Point2f(0.0 , 0.0),
              cv::Point2f(0.0, 0.0)};
 
-    cv::Point3f target_pt[]={
-             cv::Point3f(0.0, 0.0, 1.0),
-             cv::Point3f(0.0 , 0.0, 1.0),
-             cv::Point3f(0.0 , 0.0, 1.0),
-             cv::Point3f(0.0, 0.0, 1.0)};
+    cv::Mat target = (cv::Mat_<double>(3,4) << 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+
     ros::Rate rate(30);
 
     tf::TransformListener listener;
@@ -92,19 +89,25 @@ void Callback(const std_msgs::Int16& msg)
         new_dst_pt[i].y = (rot[1].x * dst_pt[i].x) + (rot[0].y * dst_pt[i].y);
         //new_dst_pt[i] = cv::Point2f(0.0, 0.0);
       }
-      cv::Mat homography_matrix = cv::getPerspectiveTransform(src_pt,new_dst_pt);
+      cv::Mat H = cv::getPerspectiveTransform(src_pt,new_dst_pt);
 
       double weight = (0.80 - current_pan) * 362.0;
       double centroid = -(1650.0 * tan(current_pan));
 
-      target_pt[0].x = centroid - 5.0 - weight;
-      target_pt[0].y = 1655.0 + weight;
-      target_pt[1].x = centroid + 5.0 + weight;
-      target_pt[1].y = 1655.0 + weight;
-      target_pt[2].x = centroid - 5.0 - weight;
-      target_pt[2].y = 1645.0 - weight;
-      target_pt[3].x = centroid + 5.0 + weight;
-      target_pt[3].y = 1645.0 - weight;
+      target.at<double>(0,0) = centroid - 5.0 - weight;
+      //std::cout << "target = "<< std::endl << " "  << target << std::endl << std::endl;
+      //target.at(0,0) = centroid - 5.0 - weight;
+      // target[0][1] = 1655.0 + weight;
+      // target[1][0] = centroid + 5.0 + weight;
+      // target[1][1] = 1655.0 + weight;
+      // target[2][0] = centroid - 5.0 - weight;
+      // target[2][1] = 1645.0 - weight;
+      // target[3][0] = centroid + 5.0 + weight;
+      // target[3][1] = 1645.0 - weight;
+
+      for (int i = 0; i < 4; i++) {
+        cv::Mat g = H.inv() * target.row(i).t();
+      }
 
 
 
