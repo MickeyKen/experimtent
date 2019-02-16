@@ -7,6 +7,7 @@
 #include <std_msgs/Int16.h>
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <tf/transform_datatypes.h>
 
 int data_base = 0;
 
@@ -65,6 +66,12 @@ void Callback(const std_msgs::Int16& msg)
         ros::Duration(1.0).sleep();
         continue;
       }
+      tf::Quaternion q(transform.getRotation().getX(), transform.getRotation().getY(), transform.getRotation().getZ(), transform.getRotation().getW());
+      tf::Matrix3x3 m(q);
+      double roll, pitch, yaw;
+      m.getRPY(roll, pitch, yaw);
+      std::cout << "Roll: " << roll << ", Pitch: " << pitch << ", Yaw: " << yaw << std::endl;
+
 
       double current_pan = 0.9;
       const cv::Point2f rot[]={
