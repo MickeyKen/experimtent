@@ -17,10 +17,12 @@ void Callback(const std_msgs::Int16& msg)
 
   std::string file_dir = ros::package::getPath("experiment_miki") + "/src/image/";
   std::string input_file_path = file_dir + "pop_90.png";
-  cv::Mat source_img = cv::imread(input_file_path, cv::IMREAD_GRAYSCALE);
+  cv::Mat source_img = cv::imread(input_file_path, cv::IMREAD_UNCHANGED);
   cv::imshow("image", source_img);
   cv::waitKey();
-  
+
+  return 0;
+
 }
 
 int main(int argc, char **argv)
