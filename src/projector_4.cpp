@@ -31,18 +31,36 @@ void Callback(const std_msgs::Int16& msg)
              cv::Point2f(1023.0 , 0.0),
              cv::Point2f(1023.0 , 767.0),
              cv::Point2f(0.0, 767.0)};
-
+    //printf("x: %f y: %f", src_pt[2].x, src_pt[2].y);
     const cv::Point2f dst_pt[]={
              cv::Point2f(-620.0, 2660.0),
              cv::Point2f(620.0 , 2660.0),
              cv::Point2f(390.0 , 1320.0),
              cv::Point2f(-390.0, 1320.0)};
-    const cv::Mat homography_matrix = cv::getPerspectiveTransform(src_pt,dst_pt);
-    std::cout << "M = "<< std::endl << " "  << homography_matrix << std::endl << std::endl;
-
+    //const cv::Mat homography_matrix = cv::getPerspectiveTransform(src_pt,dst_pt);
+    //std::cout << "M = "<< std::endl << " "  << homography_matrix << std::endl << std::endl;
+    cv::Point2f new_dst_pt[]={
+             cv::Point2f(0.0, 0.0),
+             cv::Point2f(0.0 , 0.0),
+             cv::Point2f(0.0 , 0.0),
+             cv::Point2f(0.0, 0.0)};
     ros::Rate rate(30);
     while (ros::ok()) {
-      //printf("x: %f y: %f", src_pt[2].x, src_pt[2].y);
+      //get pan degree
+      
+      double current_pan = 0.9;
+      const cv::Point2f rot[]={
+               cv::Point2f(cos(current_pan), -sin(current_pan)),
+               cv::Point2f(sin(current_pan), cos(current_pan))};
+      for (int i = 0; i < 4; i++) {
+        new_dst_pt[i].x = (rot[0].x * dst_pt[i].x) + (rot[0].y * dst_pt[i].y);
+        new_dst_pt[i].y = (rot[1].x * dst_pt[i].x) + (rot[0].y * dst_pt[i].y);
+        //new_dst_pt[i] = cv::Point2f(0.0, 0.0);
+      }
+
+
+
+
       cv::imshow("screen_4", source_img);
       cv::waitKey(1);
       n.getParam("exp_miki_img/switch", fin_switch);
