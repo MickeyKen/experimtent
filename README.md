@@ -14,5 +14,7 @@ exp_num: 4 ~ 7 , 0 (fin)
 
 
 ==== bag file =====
+
 rosparam set /use_sim_time true
+
 rosbag play --clock filename.bag
