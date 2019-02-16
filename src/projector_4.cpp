@@ -95,19 +95,28 @@ void Callback(const std_msgs::Int16& msg)
       double centroid = -(1650.0 * tan(current_pan));
 
       target.at<double>(0,0) = centroid - 5.0 - weight;
+      target.at<double>(0,1) = 1655.0 + weight;
+      target.at<double>(0,2) = 1.0;
+      target.at<double>(1,0) = centroid + 5.0 + weight;
+      target.at<double>(1,1) = 1655.0 + weight;
+      target.at<double>(1,2) = 1.0;
+      target.at<double>(2,0) = centroid - 5.0 - weight;
+      target.at<double>(2,1) = 1645.0 - weight;
+      target.at<double>(2,2) = 1.0;
+      target.at<double>(3,0) = centroid + 5.0 + weight;
+      target.at<double>(3,1) = 1645.0 - weight;
+      target.at<double>(3,2) = 1.0;
       //std::cout << "target = "<< std::endl << " "  << target << std::endl << std::endl;
-      //target.at(0,0) = centroid - 5.0 - weight;
-      // target[0][1] = 1655.0 + weight;
-      // target[1][0] = centroid + 5.0 + weight;
-      // target[1][1] = 1655.0 + weight;
-      // target[2][0] = centroid - 5.0 - weight;
-      // target[2][1] = 1645.0 - weight;
-      // target[3][0] = centroid + 5.0 + weight;
-      // target[3][1] = 1645.0 - weight;
 
+      cv::Mat calc = (cv::Mat_<double>(3,1) << 1, 1, 1);
       for (int i = 0; i < 4; i++) {
-        cv::Mat g = H.inv() * target.row(i).t();
+        calc =  H.inv() * target.row(i).t();
+        new_dst_pt[i].x = calc.at<double>(0,0) / calc.at<double>(2,0);
+        new_dst_pt[i].y = calc.at<double>(1,0) / calc.at<double>(2,0);
+        printf("x: %f , y: %f", new_dst_pt[i].x, new_dst_pt[i].y);
+        //std::cout << "g = "<< std::endl << " "  << H.inv() * target.row(i).t() << std::endl << std::endl;
       }
+      //std::cout << "g = "<< std::endl << " "  << target << std::endl << std::endl;
 
 
 
