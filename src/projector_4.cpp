@@ -45,9 +45,27 @@ void Callback(const std_msgs::Int16& msg)
              cv::Point2f(0.0 , 0.0),
              cv::Point2f(0.0, 0.0)};
     ros::Rate rate(30);
+
+    tf::TransformListener listener;
     while (ros::ok()) {
+
+      n.getParam("exp_miki_img/switch", fin_switch);
+      if (fin_switch == 0) {
+        break;
+      }
       //get pan degree
-      
+      tf::StampedTransform transform;
+      try {
+        listener.waitForTransform("/ud_base_footprint", "/ud_pt_plate_link", ros::Time(0), ros::Duration(3.0));
+        listener.lookupTransform("ud_base_footprint", "ud_pt_plate_link", ros::Time(0), transform);
+
+      }
+      catch (tf::TransformException &ex) {
+        ROS_ERROR("%s", ex.what());
+        ros::Duration(1.0).sleep();
+        continue;
+      }
+
       double current_pan = 0.9;
       const cv::Point2f rot[]={
                cv::Point2f(cos(current_pan), -sin(current_pan)),
@@ -63,10 +81,6 @@ void Callback(const std_msgs::Int16& msg)
 
       cv::imshow("screen_4", source_img);
       cv::waitKey(1);
-      n.getParam("exp_miki_img/switch", fin_switch);
-      if (fin_switch == 0) {
-        break;
-      }
       rate.sleep();
     }
     cv::destroyWindow("screen_4");
