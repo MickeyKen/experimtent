@@ -32,7 +32,7 @@ def callback(data):
 
     if exp_num == 4:
       #"print pass"
-      r = rospy.Rate(10) 
+      r = rospy.Rate(10)
       pts_src = np.array([[0,0], [1023,0], [1023,767],[0,767]],np.float32)
       pts_org = np.array([[-620, 2660],[620, 2660],[390, 1320],[-390, 1320]])
 
@@ -51,7 +51,7 @@ def callback(data):
         current_pan = get_pan_position()
 
         weight = (0.80 - current_pan) * 362
-        
+
 
         centroid = -(1650 * math.tan(current_pan))
         #print "centroid: ", centroid
@@ -59,7 +59,7 @@ def callback(data):
                           [math.sin(current_pan), math.cos(current_pan)]])
 
         new_pts_org = np.array([[0, 0],[0, 0],[0, 0],[0, 0]],np.float32)
-        new_pts_org[0] = np.dot(rot, pts_org[0].T) 
+        new_pts_org[0] = np.dot(rot, pts_org[0].T)
         new_pts_org[1] = np.dot(rot, pts_org[1].T)
         new_pts_org[2] = np.dot(rot, pts_org[2].T)
         new_pts_org[3] = np.dot(rot, pts_org[3].T)
@@ -84,7 +84,7 @@ def callback(data):
         #print s
         new_pts_org[1][0] = s[0][0]
         new_pts_org[1][1] = s[1][0]
-        
+
         t = np.float32([[centroid - 5.0 - weight, 1645.0 - weight, 1.0]])
         t = t.T
         t = np.dot(h, t)
@@ -115,10 +115,8 @@ def callback(data):
 def exp_miki_img():
     rospy.init_node('exp_miki_img_4', anonymous=True)
     #rospy.set_param("exp_miki_img/switch", 1)
-    rospy.Subscriber("finish_pantilt", Int16, callback) 
+    rospy.Subscriber("finish_pantilt", Int16, callback)
     rospy.spin()
 
 if __name__ == '__main__':
     exp_miki_img()
-
-

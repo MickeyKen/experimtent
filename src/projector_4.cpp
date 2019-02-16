@@ -32,6 +32,11 @@ void Callback(const std_msgs::Int16& msg)
              cv::Point2f(1023.0 , 0.0),
              cv::Point2f(1023.0 , 767.0),
              cv::Point2f(0.0, 767.0)};
+    // std::vector<cv::Point2f> pts_src;
+    // pts_src.push_back(cv::Point2f(0.0, 0.0));
+    // pts_src.push_back(cv::Point2f(1023.0 , 0.0));
+    // pts_src.push_back(cv::Point2f(1023.0 , 767.0));
+    // pts_src.push_back(cv::Point2f(0.0, 767.0));
     //printf("x: %f y: %f", src_pt[2].x, src_pt[2].y);
     const cv::Point2f dst_pt[]={
              cv::Point2f(-620.0, 2660.0),
@@ -45,6 +50,12 @@ void Callback(const std_msgs::Int16& msg)
              cv::Point2f(0.0 , 0.0),
              cv::Point2f(0.0 , 0.0),
              cv::Point2f(0.0, 0.0)};
+
+    cv::Point3f target_pt[]={
+             cv::Point3f(0.0, 0.0, 1.0),
+             cv::Point3f(0.0 , 0.0, 1.0),
+             cv::Point3f(0.0 , 0.0, 1.0),
+             cv::Point3f(0.0, 0.0, 1.0)};
     ros::Rate rate(30);
 
     tf::TransformListener listener;
@@ -72,7 +83,6 @@ void Callback(const std_msgs::Int16& msg)
       m.getRPY(roll, pitch, yaw);
       //std::cout << "Roll: " << roll << ", Pitch: " << pitch << ", Yaw: " << yaw << std::endl;
 
-
       double current_pan = yaw;
       const cv::Point2f rot[]={
                cv::Point2f(cos(current_pan), -sin(current_pan)),
@@ -82,6 +92,23 @@ void Callback(const std_msgs::Int16& msg)
         new_dst_pt[i].y = (rot[1].x * dst_pt[i].x) + (rot[0].y * dst_pt[i].y);
         //new_dst_pt[i] = cv::Point2f(0.0, 0.0);
       }
+      cv::Mat homography_matrix = cv::getPerspectiveTransform(src_pt,new_dst_pt);
+
+      double weight = (0.80 - current_pan) * 362.0;
+      double centroid = -(1650.0 * tan(current_pan));
+
+      target_pt[0].x = centroid - 5.0 - weight;
+      target_pt[0].y = 1655.0 + weight;
+      target_pt[1].x = centroid + 5.0 + weight;
+      target_pt[1].y = 1655.0 + weight;
+      target_pt[2].x = centroid - 5.0 - weight;
+      target_pt[2].y = 1645.0 - weight;
+      target_pt[3].x = centroid + 5.0 + weight;
+      target_pt[3].y = 1645.0 - weight;
+
+
+
+
 
 
 
