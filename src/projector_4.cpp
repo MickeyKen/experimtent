@@ -113,9 +113,11 @@ void Callback(const std_msgs::Int16& msg)
         calc =  H.inv() * target.row(i).t();
         new_dst_pt[i].x = calc.at<double>(0,0) / calc.at<double>(2,0);
         new_dst_pt[i].y = calc.at<double>(1,0) / calc.at<double>(2,0);
-        printf("x: %f , y: %f", new_dst_pt[i].x, new_dst_pt[i].y);
+        //printf("x: %f , y: %f", new_dst_pt[i].x, new_dst_pt[i].y);
         //std::cout << "g = "<< std::endl << " "  << H.inv() * target.row(i).t() << std::endl << std::endl;
       }
+      cv::Mat M = cv::getPerspectiveTransform(src_pt,new_dst_pt);
+      cv::warpPerspective( source_img, source_img, M, source_img.size());
       //std::cout << "g = "<< std::endl << " "  << target << std::endl << std::endl;
 
 
