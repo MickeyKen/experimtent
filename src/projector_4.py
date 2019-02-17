@@ -22,7 +22,7 @@ def get_pan_position():
 
 def callback(data):
 
-    img = cv2.imread('/home/ud/catkin_ws/src/experiment_miki/src/image/pop_90.png')
+    img = cv2.imread('/home/mikintu2/catkin_ws/src/experimtent/src/image/pop_90.png')
     h = 1024
     w = 768
     img = cv2.resize(img,(h,w))
