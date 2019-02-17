@@ -9,6 +9,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <tf/transform_datatypes.h>
 
+
 int data_base = 0;
 
 
@@ -30,6 +31,9 @@ void Callback(const std_msgs::Int16& msg)
     int ColumnOfNewImage = 1024;
     int RowsOfNewImage = 768;
     resize(source_img, source_img, cv::Size(ColumnOfNewImage,RowsOfNewImage));
+
+    cv::namedWindow( "screen_4", CV_WINDOW_NORMAL );
+    cv::setWindowProperty("screen_4",CV_WND_PROP_FULLSCREEN,CV_WINDOW_FULLSCREEN);
 
     const cv::Point2f src_pt[]={
              cv::Point2f(0.0, 0.0),
