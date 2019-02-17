@@ -68,6 +68,9 @@ void Callback(const std_msgs::Int16& msg)
 
     while (ros::ok()) {
 
+      double weight = 0.0;
+      double centroid = 0.0;
+
       n.getParam("exp_miki_img/switch", fin_switch);
       if (fin_switch == 0) {
         break;
@@ -76,7 +79,7 @@ void Callback(const std_msgs::Int16& msg)
       tf::StampedTransform transform;
       try {
         listener.waitForTransform("/ud_base_footprint", "/ud_pt_plate_link", ros::Time(0), ros::Duration(3.0));
-        listener.lookupTransform("ud_base_footprint", "ud_pt_plate_link", ros::Time(0), transform);
+        listener.lookupTransform("/ud_base_footprint", "/ud_pt_plate_link", ros::Time(0), transform);
 
       }
       catch (tf::TransformException &ex) {
@@ -84,6 +87,7 @@ void Callback(const std_msgs::Int16& msg)
         ros::Duration(1.0).sleep();
         continue;
       }
+
       tf::Quaternion q(transform.getRotation().getX(), transform.getRotation().getY(), transform.getRotation().getZ(), transform.getRotation().getW());
       tf::Matrix3x3 m(q);
       double roll, pitch, yaw;
@@ -91,7 +95,10 @@ void Callback(const std_msgs::Int16& msg)
       //std::cout << "Roll: " << roll << ", Pitch: " << pitch << ", Yaw: " << yaw << std::endl;
 
       double current_pan = yaw;
-      const cv::Point2f rot[]={
+      //printf("pan : %f", current_pan);
+      // printf("\n");
+
+      cv::Point2f rot[]={
                cv::Point2f(cos(current_pan), -sin(current_pan)),
                cv::Point2f(sin(current_pan), cos(current_pan))};
       for (int i = 0; i < 4; i++) {
@@ -101,9 +108,10 @@ void Callback(const std_msgs::Int16& msg)
       }
       cv::Mat H = cv::getPerspectiveTransform(src_pt,new_dst_pt);
 
-      double weight = (0.80 - current_pan) * 362.0;
-      // printf("%f", weight);
-      double centroid = -(1650.0 * tan(current_pan));
+      weight = (0.80 - current_pan) * 362.0;
+      centroid = -(1650.0 * tan(current_pan));
+      // printf("weight: %f\n", weight);
+      // printf("centroid: %f\n", centroid);
 
       target.at<double>(0,0) = centroid - 5.0 - weight;
       target.at<double>(0,1) = 1655.0 + weight;
@@ -123,6 +131,7 @@ void Callback(const std_msgs::Int16& msg)
       //std::cout << "target = "<< std::endl << " "  << target << std::endl << std::endl;
 
       cv::Mat calc = (cv::Mat_<double>(3,1) << 1, 1, 1);
+
       for (int i = 0; i < 4; i++) {
         calc =  H.inv() * target.row(i).t();
         new_dst_pt[i].x = calc.at<double>(0,0) / calc.at<double>(2,0);
@@ -132,13 +141,17 @@ void Callback(const std_msgs::Int16& msg)
       }
 
       //printf("\n");
+      cv::Mat warp_img(cv::Size(1024, 768), CV_8U, cv::Scalar::all(0));
       cv::Mat M = cv::getPerspectiveTransform(src_pt,new_dst_pt);
-      cv::warpPerspective( source_img, source_img, M, source_img.size());
+      cv::warpPerspective( source_img, warp_img, M, source_img.size());
       // std::cout << "g = "<< std::endl << " "  << M << std::endl << std::endl;
-      cv::imshow("screen_4", source_img);
+      cv::imshow("screen_4", warp_img);
       cv::waitKey(1);
+      //printf("finish");
       rate.sleep();
     }
+
+
     cv::destroyWindow("screen_4");
   }
 
