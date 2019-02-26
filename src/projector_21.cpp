@@ -152,7 +152,7 @@ void Callback(const std_msgs::Int16& msg)
     }
 
 
-    cv::destroyWindow("screen_4");
+    // cv::destroyWindow("screen_4");
   }
 
 
