@@ -66,9 +66,9 @@ void Callback(const std_msgs::Int16& msg)
 
     ///// prepare roatation matrix for x,y,z
     //CV_32F is float
-    cv::Mat rot_x(3, 3, CV_32F, cv::Scalar::all(0));
-    cv::Mat rot_y(3, 3, CV_32F, cv::Scalar::all(0));
-    cv::Mat rot_z(3, 3, CV_32F, cv::Scalar::all(0));
+    cv::Mat rot_x(3, 3, CV_32F, cv::Scalar::all(0.0));
+    cv::Mat rot_y(3, 3, CV_32F, cv::Scalar::all(0.0));
+    cv::Mat rot_z(3, 3, CV_32F, cv::Scalar::all(0.0));
     rot_x.at<float>(0, 0) = 1.0;
     rot_y.at<float>(1, 1) = 1.0;
     rot_z.at<float>(2, 2) = 1.0;
