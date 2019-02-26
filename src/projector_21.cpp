@@ -38,6 +38,13 @@ void Callback(const std_msgs::Int16& msg)
              cv::Point2f(1023.0 , 767.0),
              cv::Point2f(0.0, 767.0)};
 
+    // const cv::Point3f Iproj[]={
+    //          cv::Point3f(2.14537932e+03 ,  0.00000000e+00 ,  4.95015557e+02),
+    //          cv::Point3f(0.00000000e+00 ,  2.05554230e+03 ,  4.57250515e+02),
+    //          cv::Point3f(0.00000000e+00 ,  0.00000000e+00 ,  1.00000000e+00)};
+    const cv::Mat Iproj = (cv::Mat_<float>(3, 3) << 2.14537932e+03 ,  0.00000000e+00 ,  4.95015557e+02,
+                                                       0.00000000e+00 ,  2.05554230e+03 ,  4.57250515e+02,
+                                                      0.00000000e+00 ,  0.00000000e+00 ,  1.00000000e+00);
     //const cv::Mat homography_matrix = cv::getPerspectiveTransform(src_pt,dst_pt);
     //std::cout << "M = "<< std::endl << " "  << homography_matrix << std::endl << std::endl;
     cv::Point2f new_dst_pt[]={
@@ -96,7 +103,7 @@ void Callback(const std_msgs::Int16& msg)
 
       tf::Quaternion q(transform.getRotation().getX(), transform.getRotation().getY(), transform.getRotation().getZ(), transform.getRotation().getW());
       tf::Matrix3x3 m(q);
-      double x, y, z;
+      // double x, y, z;
       double roll, pitch, yaw;
       m.getRPY(roll, pitch, yaw);
       //std::cout << "Roll: " << roll << ", Pitch: " << pitch << ", Yaw: " << yaw << std::endl;
@@ -120,10 +127,12 @@ void Callback(const std_msgs::Int16& msg)
       rot_z.at<float>(1, 1) = cos(yaw);
 
       Rotation = rot_z * rot_x * rot_y;
-      Rotation.at<float>(0, 2) = x;
-      Rotation.at<float>(1, 2) = y;
-      Rotation.at<float>(2, 2) = z;
+      Rotation.at<float>(0, 2) = transform.getOrigin().x();
+      Rotation.at<float>(1, 2) = transform.getOrigin().y();
+      Rotation.at<float>(2, 2) = transform.getOrigin().z();
 
+      std::cout << "cmoplete:" << Rotation * Iproj << std::endl;
+\
 
       //std::cout << "Rotation matrix: " << rot_z * rot_x * rot_y << std::endl;
 
