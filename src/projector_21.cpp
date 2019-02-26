@@ -53,15 +53,14 @@ void Callback(const std_msgs::Int16& msg)
 
 
     ///// rojector inner parameter
-    const cv::Mat Iproj = (cv::Mat_<float>(3, 3) << 2145.37932 ,  0.00000000 ,  495.015557,
+    const cv::Mat Ap = (cv::Mat_<float>(3, 3) << 2145.37932 ,  0.00000000 ,  495.015557,
                                                        0.00000000 ,  2055.54230 ,  457.250515,
                                                       0.00000000 ,  0.00000000 ,  1.00000000);
-    // std::cout << "M = "<< std::endl << " "  << Iproj << std::endl << std::endl;
+    // std::cout << "M = "<< std::endl << " "  << Ap << std::endl << std::endl;
 
 
     ///// projector center point
-    cv::Mat uv_center = (cv::Mat_<float>(1,3) << 512.0, 384.0, 1.0);
-    uv_center = uv_center.t();
+    const cv::Mat uv_center = (cv::Mat_<float>(3,1) << 512.0, 384.0, 1.0);
 
 
     ///// prepare roatation matrix for x,y,z
@@ -72,7 +71,7 @@ void Callback(const std_msgs::Int16& msg)
     rot_x.at<float>(0, 0) = 1.0;
     rot_y.at<float>(1, 1) = 1.0;
     rot_z.at<float>(2, 2) = 1.0;
-
+    // for rot_x * rot_y * rot_z
     cv::Mat Rotation(3, 3, CV_32F);
 
     cv::Mat target = (cv::Mat_<double>(4,3) << 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
@@ -82,7 +81,7 @@ void Callback(const std_msgs::Int16& msg)
 
 
     ///// for calcurate
-    cv::Mat calc = (cv::Mat_<float>(3,1) << 1, 1, 1);
+    cv::Mat calc = (cv::Mat_<float>(3,1) << 1.0, 1.0, 1.0);
 
     ///// prepare rate and tf
     ros::Rate rate(30);
@@ -144,7 +143,7 @@ void Callback(const std_msgs::Int16& msg)
 
 
       ///// calcurate center x-y-z point in real world
-      calc = (Iproj * Rotation).inv() * uv_center;
+      calc = (Ap * Rotation).inv() * uv_center;
 
       calc = calc / calc.at<float>(2,0);
       std::cout << "cmoplete:" << calc << std::endl;
