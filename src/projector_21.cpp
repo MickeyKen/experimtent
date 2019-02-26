@@ -21,6 +21,7 @@ void Callback(const std_msgs::Int16& msg)
   n.getParam("/exp_num", exp_num);
   n.setParam("exp_miki_img/switch", 1);
 
+
   if (exp_num == 21) {
     std::string file_dir = ros::package::getPath("experiment_miki") + "/src/image/";
     std::string input_file_path = file_dir + "pop_90.png";
@@ -47,6 +48,9 @@ void Callback(const std_msgs::Int16& msg)
                                                       0.00000000e+00 ,  0.00000000e+00 ,  1.00000000e+00);
     //const cv::Mat homography_matrix = cv::getPerspectiveTransform(src_pt,dst_pt);
     //std::cout << "M = "<< std::endl << " "  << homography_matrix << std::endl << std::endl;
+    cv::Mat center = (cv::Mat_<float>(1,3) << 512.0, 384.0, 1.0);
+    center = center.t();
+
     cv::Point2f new_dst_pt[]={
              cv::Point2f(0.0, 0.0),
              cv::Point2f(0.0 , 0.0),
@@ -132,7 +136,6 @@ void Callback(const std_msgs::Int16& msg)
       Rotation.at<float>(2, 2) = transform.getOrigin().z();
 
       std::cout << "cmoplete:" << Rotation * Iproj << std::endl;
-\
 
       //std::cout << "Rotation matrix: " << rot_z * rot_x * rot_y << std::endl;
 
