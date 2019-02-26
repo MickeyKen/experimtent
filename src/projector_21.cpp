@@ -117,7 +117,7 @@ void Callback(const std_msgs::Int16& msg)
       rot_z.at<float>(1, 0) = sin(yaw);
       rot_z.at<float>(1, 1) = cos(yaw);
 
-      std::cout << "Rotation ,atrix: " << rot_z * rot_x * rot_y << std::endl;
+      std::cout << "Rotation matrix: " << rot_z * rot_x * rot_y << std::endl;
 
 
 
