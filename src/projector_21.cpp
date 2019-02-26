@@ -18,12 +18,14 @@ void Callback(const std_msgs::Int16& msg)
 
   int exp_num = 0;
   int fin_switch = 1;
+
   n.getParam("/exp_num", exp_num);
   n.setParam("exp_miki_img/switch", 1);
 
 
   if (exp_num == 21) {
-
+    ///// decide image size in real world
+    float size = 1000 / 2;
     ///// get image and resize projectr size
     std::string file_dir = ros::package::getPath("experiment_miki") + "/src/image/";
     std::string input_file_path = file_dir + "pop_90.png";
@@ -54,7 +56,7 @@ void Callback(const std_msgs::Int16& msg)
 
     ///// rojector inner parameter
     const cv::Mat Ap = (cv::Mat_<float>(3, 3) << 2145.37932 ,  0.00000000 ,  495.015557,
-                                                       0.00000000 ,  2055.54230 ,  557.250515,   //457.250515
+                                                       0.00000000 ,  2055.54230 ,  657.250515,   //457.250515
                                                       0.00000000 ,  0.00000000 ,  1.00000000);
     // std::cout << "M = "<< std::endl << " "  << Ap << std::endl << std::endl;
 
@@ -78,10 +80,10 @@ void Callback(const std_msgs::Int16& msg)
     // for rot_x * rot_y * rot_z
     cv::Mat Rotation(3, 3, CV_32F);
 
-    cv::Mat target = (cv::Mat_<double>(4,3) << 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+    cv::Mat target = (cv::Mat_<float>(4,3) << 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
 
     ///// prepare image matrix for display
-    //cv::Mat warp_img(cv::Size(1024, 768), CV_8U, cv::Scalar::all(0));
+    cv::Mat warp_img(cv::Size(1024, 768), CV_8U, cv::Scalar::all(0));
 
 
     ///// for calcurate
@@ -150,22 +152,42 @@ void Callback(const std_msgs::Int16& msg)
       calc = (Ap * Rotation).inv() * uv_center;
 
       calc = calc / calc.at<float>(2,0);
-      std::cout << "cmoplete:" << calc << std::endl;
+      // std::cout << "cmoplete:" << calc << std::endl;
 
+      target.at<float>(0,0) = calc.at<float>(0,0) - size;
+      target.at<float>(0,1) = calc.at<float>(1,0) + size;
+      target.at<float>(0,2) = 1.0;
 
+      target.at<float>(1,0) = calc.at<float>(0,0) + size;
+      target.at<float>(1,1) = calc.at<float>(1,0) + size;
+      target.at<float>(1,2) = 1.0;
 
+      target.at<float>(2,0) = calc.at<float>(0,0) + size;
+      target.at<float>(2,1) = calc.at<float>(1,0) - size;
+      target.at<float>(2,2) = 1.0;
 
-      //cv::Mat M = cv::getPerspectiveTransform(src_pt,dst_pt);
-      //cv::warpPerspective( source_img, warp_img, M, source_img.size());
+      target.at<float>(3,0) = calc.at<float>(0,0) - size;
+      target.at<float>(3,1) = calc.at<float>(1,0) - size;
+      target.at<float>(3,2) = 1.0;
+
+      for (int i = 0; i < 4; i++) {
+        calc =  Ap * Rotation * target.row(i).t();
+        dst_pt[i].x = calc.at<float>(0,0) / calc.at<float>(2,0);
+        dst_pt[i].y = calc.at<float>(1,0) / calc.at<float>(2,0);
+        // printf("x: %f , y: %f", dst_pt[i].x, dst_pt[i].y);
+        // std::cout << "g = "<< std::endl << " "  << Ap * Rotation * target.row(i).t() << std::endl << std::endl;
+      }
+      cv::Mat M = cv::getPerspectiveTransform(src_pt,dst_pt);
+      cv::warpPerspective( source_img, warp_img, M, source_img.size());
       // std::cout << "g = "<< std::endl << " "  << M << std::endl << std::endl;
-      //cv::imshow("screen_4", warp_img);
-      //cv::waitKey(1);
+      cv::imshow("screen_4", warp_img);
+      cv::waitKey(1);
       //printf("finish");
       rate.sleep();
     }
 
 
-    // cv::destroyWindow("screen_4");
+    cv::destroyWindow("screen_4");
   }
 
 
