@@ -43,9 +43,11 @@ void Callback(const std_msgs::Int16& msg)
     //          cv::Point3f(2.14537932e+03 ,  0.00000000e+00 ,  4.95015557e+02),
     //          cv::Point3f(0.00000000e+00 ,  2.05554230e+03 ,  4.57250515e+02),
     //          cv::Point3f(0.00000000e+00 ,  0.00000000e+00 ,  1.00000000e+00)};
-    const cv::Mat Iproj = (cv::Mat_<float>(3, 3) << 2.14537932e+03 ,  0.00000000e+00 ,  4.95015557e+02,
-                                                       0.00000000e+00 ,  2.05554230e+03 ,  4.57250515e+02,
-                                                      0.00000000e+00 ,  0.00000000e+00 ,  1.00000000e+00);
+    const cv::Mat Iproj = (cv::Mat_<float>(3, 3) << 2145.37932 ,  0.00000000 ,  495.015557,
+                                                       0.00000000 ,  2055.54230 ,  457.250515,
+                                                      0.00000000 ,  0.00000000e+00 ,  1.00000000);
+    // std::cout << "M = "<< std::endl << " "  << Iproj << std::endl << std::endl;
+
     //const cv::Mat homography_matrix = cv::getPerspectiveTransform(src_pt,dst_pt);
     //std::cout << "M = "<< std::endl << " "  << homography_matrix << std::endl << std::endl;
     cv::Mat center = (cv::Mat_<float>(1,3) << 512.0, 384.0, 1.0);
@@ -135,13 +137,7 @@ void Callback(const std_msgs::Int16& msg)
       Rotation.at<float>(1, 2) = transform.getOrigin().y();
       Rotation.at<float>(2, 2) = transform.getOrigin().z();
 
-      std::cout << "cmoplete:" << (Rotation * Iproj).inv() * center << std::endl;
-
-      //std::cout << "Rotation matrix: " << rot_z * rot_x * rot_y << std::endl;
-
-
-
-
+      // std::cout << "cmoplete:" << (Iproj * Rotation).inv() * center << std::endl;
 
 
       //printf("\n");
