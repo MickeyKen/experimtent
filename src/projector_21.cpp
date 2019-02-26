@@ -22,7 +22,6 @@ void Callback(const std_msgs::Int16& msg)
   n.setParam("exp_miki_img/switch", 1);
 
   if (exp_num == 21) {
-    printf("Inside\n", );
     std::string file_dir = ros::package::getPath("experiment_miki") + "/src/image/";
     std::string input_file_path = file_dir + "pop_90.png";
     cv::Mat source_img = cv::imread(input_file_path, cv::IMREAD_UNCHANGED);
@@ -67,6 +66,8 @@ void Callback(const std_msgs::Int16& msg)
     rot_z.at<float>(2, 1) = 0.0;
     rot_z.at<float>(2, 2) = 1.0;
 
+    cv::Mat Rotation(3, 3, CV_32F);
+
     cv::Mat target = (cv::Mat_<double>(4,3) << 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
 
     ros::Rate rate(30);
@@ -95,6 +96,7 @@ void Callback(const std_msgs::Int16& msg)
 
       tf::Quaternion q(transform.getRotation().getX(), transform.getRotation().getY(), transform.getRotation().getZ(), transform.getRotation().getW());
       tf::Matrix3x3 m(q);
+      double x, y, z;
       double roll, pitch, yaw;
       m.getRPY(roll, pitch, yaw);
       //std::cout << "Roll: " << roll << ", Pitch: " << pitch << ", Yaw: " << yaw << std::endl;
@@ -117,7 +119,13 @@ void Callback(const std_msgs::Int16& msg)
       rot_z.at<float>(1, 0) = sin(yaw);
       rot_z.at<float>(1, 1) = cos(yaw);
 
-      std::cout << "Rotation matrix: " << rot_z * rot_x * rot_y << std::endl;
+      Rotation = rot_z * rot_x * rot_y;
+      Rotation.at<float>(0, 2) = x;
+      Rotation.at<float>(1, 2) = y;
+      Rotation.at<float>(2, 2) = z;
+
+
+      //std::cout << "Rotation matrix: " << rot_z * rot_x * rot_y << std::endl;
 
 
 
