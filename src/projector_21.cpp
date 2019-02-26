@@ -60,8 +60,8 @@ void Callback(const std_msgs::Int16& msg)
 
 
     ///// projector center point
-    cv::Mat center = (cv::Mat_<float>(1,3) << 512.0, 384.0, 1.0);
-    center = center.t();
+    cv::Mat uv_center = (cv::Mat_<float>(1,3) << 512.0, 384.0, 1.0);
+    uv_center = uv_center.t();
 
 
     ///// prepare roatation matrix for x,y,z
@@ -144,7 +144,7 @@ void Callback(const std_msgs::Int16& msg)
 
 
       ///// calcurate center x-y-z in real world
-      calc = (Iproj * Rotation).inv() * center;
+      calc = (Iproj * Rotation).inv() * uv_center;
 
       calc = calc / calc.at<float>(2,0);
       std::cout << "cmoplete:" << calc << std::endl;
