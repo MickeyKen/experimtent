@@ -22,6 +22,7 @@ void Callback(const std_msgs::Int16& msg)
   n.setParam("exp_miki_img/switch", 1);
 
   if (exp_num == 21) {
+    printf("Inside\n", );
     std::string file_dir = ros::package::getPath("experiment_miki") + "/src/image/";
     std::string input_file_path = file_dir + "pop_90.png";
     cv::Mat source_img = cv::imread(input_file_path, cv::IMREAD_UNCHANGED);
@@ -50,6 +51,21 @@ void Callback(const std_msgs::Int16& msg)
     cv::Mat rot_x(3, 3, CV_32F);
     cv::Mat rot_y(3, 3, CV_32F);
     cv::Mat rot_z(3, 3, CV_32F);
+    rot_x.at<float>(0, 0) = 1.0;
+    rot_x.at<float>(0, 1) = 0.0;
+    rot_x.at<float>(0, 2) = 0.0;
+    rot_x.at<float>(1, 0) = 0.0;
+    rot_x.at<float>(2, 0) = 0.0;
+    rot_y.at<float>(0, 1) = 0.0;
+    rot_y.at<float>(1, 0) = 0.0;
+    rot_y.at<float>(1, 1) = 1.0;
+    rot_y.at<float>(1, 2) = 0.0;
+    rot_y.at<float>(2, 1) = 0.0;
+    rot_z.at<float>(0, 2) = 0.0;
+    rot_z.at<float>(1, 2) = 0.0;
+    rot_z.at<float>(2, 0) = 0.0;
+    rot_z.at<float>(2, 1) = 0.0;
+    rot_z.at<float>(2, 2) = 1.0;
 
     cv::Mat target = (cv::Mat_<double>(4,3) << 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
 
@@ -83,17 +99,38 @@ void Callback(const std_msgs::Int16& msg)
       m.getRPY(roll, pitch, yaw);
       //std::cout << "Roll: " << roll << ", Pitch: " << pitch << ", Yaw: " << yaw << std::endl;
 
-      double current_pan = yaw;
+      // insert Rotation matrix for X
+      rot_x.at<float>(1, 1) = cos(roll);
+      rot_x.at<float>(1, 2) = -sin(roll);
+      rot_x.at<float>(2, 1) = sin(roll);
+      rot_x.at<float>(2, 2) = cos(roll);
+
+      //insert Ritation matrix for y
+      rot_y.at<float>(0, 0) = cos(pitch);
+      rot_y.at<float>(0, 2) = sin(pitch);
+      rot_y.at<float>(2, 0) = -sin(pitch);
+      rot_y.at<float>(2, 2) = cos(pitch);
+
+      //insert Rotation matrix for z
+      rot_z.at<float>(0, 0) = cos(yaw);
+      rot_z.at<float>(0, 1) = -sin(yaw);
+      rot_z.at<float>(1, 0) = sin(yaw);
+      rot_z.at<float>(1, 1) = cos(yaw);
+
+      std::cout << "Rotation ,atrix: " << rot_z * rot_x * rot_y << std::endl;
+
+
+
 
 
 
       //printf("\n");
-      cv::Mat warp_img(cv::Size(1024, 768), CV_8U, cv::Scalar::all(0));
-      cv::Mat M = cv::getPerspectiveTransform(src_pt,new_dst_pt);
-      cv::warpPerspective( source_img, warp_img, M, source_img.size());
+      //cv::Mat warp_img(cv::Size(1024, 768), CV_8U, cv::Scalar::all(0));
+      //cv::Mat M = cv::getPerspectiveTransform(src_pt,new_dst_pt);
+      //cv::warpPerspective( source_img, warp_img, M, source_img.size());
       // std::cout << "g = "<< std::endl << " "  << M << std::endl << std::endl;
-      cv::imshow("screen_4", warp_img);
-      cv::waitKey(1);
+      //cv::imshow("screen_4", warp_img);
+      //cv::waitKey(1);
       //printf("finish");
       rate.sleep();
     }
