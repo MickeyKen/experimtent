@@ -58,6 +58,10 @@ void Callback(const std_msgs::Int16& msg)
                                                       0.00000000 ,  0.00000000 ,  1.00000000);
     // std::cout << "M = "<< std::endl << " "  << Ap << std::endl << std::endl;
 
+    ///// camera inner parameter
+    const cv::Mat Ac = (cv::Mat_<float>(3, 3) << 1.0464088296606685e+03 ,  0.00000000 ,  9.6962285013582118e+02,
+                                                       0.00000000 ,  1.0473601981442353e+03 ,  5.3418043955010319e+02,
+                                                      0.00000000 ,  0.00000000 ,  1.00000000);
 
     ///// projector center point
     const cv::Mat uv_center = (cv::Mat_<float>(3,1) << 512.0, 384.0, 1.0);
