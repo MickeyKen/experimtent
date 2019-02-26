@@ -81,6 +81,9 @@ void Callback(const std_msgs::Int16& msg)
     //cv::Mat warp_img(cv::Size(1024, 768), CV_8U, cv::Scalar::all(0));
 
 
+    ///// for calcurate
+    cv::Mat calc = (cv::Mat_<float>(3,1) << 1, 1, 1);
+
     ///// prepare rate and tf
     ros::Rate rate(30);
     tf::TransformListener listener;
@@ -89,12 +92,13 @@ void Callback(const std_msgs::Int16& msg)
     ///// main function
     while (ros::ok()) {
 
+      ///// switch
       n.getParam("exp_miki_img/switch", fin_switch);
       if (fin_switch == 0) {
         break;
       }
 
-      //get pan degree
+      ///// get Rotation and Translation
       tf::StampedTransform transform;
       try {
         listener.waitForTransform("/ud_base_footprint", "/ud_pt_projector_link", ros::Time(0), ros::Duration(3.0));
@@ -109,11 +113,11 @@ void Callback(const std_msgs::Int16& msg)
 
       tf::Quaternion q(transform.getRotation().getX(), transform.getRotation().getY(), transform.getRotation().getZ(), transform.getRotation().getW());
       tf::Matrix3x3 m(q);
-      // double x, y, z;
       double roll, pitch, yaw;
       m.getRPY(roll, pitch, yaw);
-      //std::cout << "Roll: " << roll << ", Pitch: " << pitch << ", Yaw: " << yaw << std::endl;
+      // std::cout << "Roll: " << roll << ", Pitch: " << pitch << ", Yaw: " << yaw << std::endl;
 
+      ///// calcurate Rotation Matrix
       // insert Rotation matrix for X
       rot_x.at<float>(1, 1) = cos(roll);
       rot_x.at<float>(1, 2) = -sin(roll);
@@ -127,17 +131,23 @@ void Callback(const std_msgs::Int16& msg)
       rot_y.at<float>(2, 2) = cos(pitch);
 
       //insert Rotation matrix for z
-      rot_z.at<float>(0, 0) = cos(yaw);
-      rot_z.at<float>(0, 1) = -sin(yaw);
-      rot_z.at<float>(1, 0) = sin(yaw);
-      rot_z.at<float>(1, 1) = cos(yaw);
+      rot_z.at<float>(0, 0) = cos(yaw-3.14);
+      rot_z.at<float>(0, 1) = -sin(yaw-3.14);
+      rot_z.at<float>(1, 0) = sin(yaw-3.14);
+      rot_z.at<float>(1, 1) = cos(yaw-3.14);
 
       Rotation = rot_z * rot_y * rot_x;
+
       Rotation.at<float>(0, 2) = transform.getOrigin().x();
       Rotation.at<float>(1, 2) = transform.getOrigin().y();
       Rotation.at<float>(2, 2) = transform.getOrigin().z();
 
-      // std::cout << "cmoplete:" << (Iproj * Rotation).inv() * center << std::endl;
+
+      ///// calcurate center x-y-z in real world
+      calc = (Iproj * Rotation).inv() * center;
+
+      calc = calc / calc.at<float>(2,0);
+      std::cout << "cmoplete:" << calc << std::endl;
 
 
 
