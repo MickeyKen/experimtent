@@ -130,12 +130,12 @@ void Callback(const std_msgs::Int16& msg)
       rot_z.at<float>(1, 0) = sin(yaw);
       rot_z.at<float>(1, 1) = cos(yaw);
 
-      Rotation = rot_z * rot_x * rot_y;
+      Rotation = rot_z * rot_y * rot_x;
       Rotation.at<float>(0, 2) = transform.getOrigin().x();
       Rotation.at<float>(1, 2) = transform.getOrigin().y();
       Rotation.at<float>(2, 2) = transform.getOrigin().z();
 
-      std::cout << "cmoplete:" << Rotation * Iproj << std::endl;
+      std::cout << "cmoplete:" << (Rotation * Iproj).inv() * center << std::endl;
 
       //std::cout << "Rotation matrix: " << rot_z * rot_x * rot_y << std::endl;
 
