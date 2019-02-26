@@ -23,6 +23,8 @@ void Callback(const std_msgs::Int16& msg)
 
 
   if (exp_num == 21) {
+
+    ///// get image and resize projectr size
     std::string file_dir = ros::package::getPath("experiment_miki") + "/src/image/";
     std::string input_file_path = file_dir + "pop_90.png";
     cv::Mat source_img = cv::imread(input_file_path, cv::IMREAD_UNCHANGED);
@@ -30,63 +32,61 @@ void Callback(const std_msgs::Int16& msg)
     int RowsOfNewImage = 768;
     resize(source_img, source_img, cv::Size(ColumnOfNewImage,RowsOfNewImage));
 
+
+    ///// set window fullscreen
     // cv::namedWindow( "screen_4", CV_WINDOW_NORMAL );
     // cv::setWindowProperty("screen_4",CV_WND_PROP_FULLSCREEN,CV_WINDOW_FULLSCREEN);
 
+
+    ///// BEFORE homography
     const cv::Point2f src_pt[]={
              cv::Point2f(0.0, 0.0),
              cv::Point2f(1023.0 , 0.0),
              cv::Point2f(1023.0 , 767.0),
              cv::Point2f(0.0, 767.0)};
-
-    // const cv::Point3f Iproj[]={
-    //          cv::Point3f(2.14537932e+03 ,  0.00000000e+00 ,  4.95015557e+02),
-    //          cv::Point3f(0.00000000e+00 ,  2.05554230e+03 ,  4.57250515e+02),
-    //          cv::Point3f(0.00000000e+00 ,  0.00000000e+00 ,  1.00000000e+00)};
-    const cv::Mat Iproj = (cv::Mat_<float>(3, 3) << 2145.37932 ,  0.00000000 ,  495.015557,
-                                                       0.00000000 ,  2055.54230 ,  457.250515,
-                                                      0.00000000 ,  0.00000000e+00 ,  1.00000000);
-    // std::cout << "M = "<< std::endl << " "  << Iproj << std::endl << std::endl;
-
-    //const cv::Mat homography_matrix = cv::getPerspectiveTransform(src_pt,dst_pt);
-    //std::cout << "M = "<< std::endl << " "  << homography_matrix << std::endl << std::endl;
-    cv::Mat center = (cv::Mat_<float>(1,3) << 512.0, 384.0, 1.0);
-    center = center.t();
-
-    cv::Point2f new_dst_pt[]={
+    // AFTER homography
+    cv::Point2f dst_pt[]={
              cv::Point2f(0.0, 0.0),
              cv::Point2f(0.0 , 0.0),
              cv::Point2f(0.0 , 0.0),
              cv::Point2f(0.0, 0.0)};
 
-    // CV_32F is float
-    cv::Mat rot_x(3, 3, CV_32F);
-    cv::Mat rot_y(3, 3, CV_32F);
-    cv::Mat rot_z(3, 3, CV_32F);
+
+    ///// rojector inner parameter
+    const cv::Mat Iproj = (cv::Mat_<float>(3, 3) << 2145.37932 ,  0.00000000 ,  495.015557,
+                                                       0.00000000 ,  2055.54230 ,  457.250515,
+                                                      0.00000000 ,  0.00000000 ,  1.00000000);
+    // std::cout << "M = "<< std::endl << " "  << Iproj << std::endl << std::endl;
+
+
+    ///// projector center point
+    cv::Mat center = (cv::Mat_<float>(1,3) << 512.0, 384.0, 1.0);
+    center = center.t();
+
+
+    ///// prepare roatation matrix for x,y,z
+    //CV_32F is float
+    cv::Mat rot_x(3, 3, CV_32F, cv::Scalar::all(0));
+    cv::Mat rot_y(3, 3, CV_32F, cv::Scalar::all(0));
+    cv::Mat rot_z(3, 3, CV_32F, cv::Scalar::all(0));
     rot_x.at<float>(0, 0) = 1.0;
-    rot_x.at<float>(0, 1) = 0.0;
-    rot_x.at<float>(0, 2) = 0.0;
-    rot_x.at<float>(1, 0) = 0.0;
-    rot_x.at<float>(2, 0) = 0.0;
-    rot_y.at<float>(0, 1) = 0.0;
-    rot_y.at<float>(1, 0) = 0.0;
     rot_y.at<float>(1, 1) = 1.0;
-    rot_y.at<float>(1, 2) = 0.0;
-    rot_y.at<float>(2, 1) = 0.0;
-    rot_z.at<float>(0, 2) = 0.0;
-    rot_z.at<float>(1, 2) = 0.0;
-    rot_z.at<float>(2, 0) = 0.0;
-    rot_z.at<float>(2, 1) = 0.0;
     rot_z.at<float>(2, 2) = 1.0;
 
     cv::Mat Rotation(3, 3, CV_32F);
 
     cv::Mat target = (cv::Mat_<double>(4,3) << 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
 
-    ros::Rate rate(30);
+    ///// prepare image matrix for display
+    //cv::Mat warp_img(cv::Size(1024, 768), CV_8U, cv::Scalar::all(0));
 
+
+    ///// prepare rate and tf
+    ros::Rate rate(30);
     tf::TransformListener listener;
 
+
+    ///// main function
     while (ros::ok()) {
 
       n.getParam("exp_miki_img/switch", fin_switch);
@@ -140,9 +140,9 @@ void Callback(const std_msgs::Int16& msg)
       // std::cout << "cmoplete:" << (Iproj * Rotation).inv() * center << std::endl;
 
 
-      //printf("\n");
-      //cv::Mat warp_img(cv::Size(1024, 768), CV_8U, cv::Scalar::all(0));
-      //cv::Mat M = cv::getPerspectiveTransform(src_pt,new_dst_pt);
+
+
+      //cv::Mat M = cv::getPerspectiveTransform(src_pt,dst_pt);
       //cv::warpPerspective( source_img, warp_img, M, source_img.size());
       // std::cout << "g = "<< std::endl << " "  << M << std::endl << std::endl;
       //cv::imshow("screen_4", warp_img);
