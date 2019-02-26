@@ -63,7 +63,7 @@ void Callback(const std_msgs::Int16& msg)
                                                        0.00000000 ,  1.0473601981442353e+03 ,  5.3418043955010319e+02,
                                                       0.00000000 ,  0.00000000 ,  1.00000000);
 
-    ///// projector center point
+    ///// projector center point 512.0 384.0
     const cv::Mat uv_center = (cv::Mat_<float>(3,1) << 512.0, 384.0, 1.0);
 
 
@@ -104,8 +104,8 @@ void Callback(const std_msgs::Int16& msg)
       ///// get Rotation and Translation
       tf::StampedTransform transform;
       try {
-        listener.waitForTransform("/ud_base_footprint", "/ud_pt_projector_optical_frame", ros::Time(0), ros::Duration(3.0));
-        listener.lookupTransform("/ud_base_footprint", "/ud_pt_projector_optical_frame", ros::Time(0), transform);
+        listener.waitForTransform("/ud_pt_projector_optical_frame","/ud_base_footprint", ros::Time(0), ros::Duration(3.0));
+        listener.lookupTransform("/ud_pt_projector_optical_frame","/ud_base_footprint", ros::Time(0), transform);
 
       }
       catch (tf::TransformException &ex) {
@@ -139,12 +139,12 @@ void Callback(const std_msgs::Int16& msg)
       rot_z.at<float>(1, 0) = sin(yaw);
       rot_z.at<float>(1, 1) = cos(yaw);
 
-      Rotation = rot_z * rot_x * rot_y;
+      Rotation = rot_z * rot_y * rot_x;
 
-      Rotation.at<float>(0, 2) = transform.getOrigin().x();
-      Rotation.at<float>(1, 2) = transform.getOrigin().y();
-      Rotation.at<float>(2, 2) = transform.getOrigin().z();
-
+      Rotation.at<float>(0, 2) = transform.getOrigin().x()*1000;
+      Rotation.at<float>(1, 2) = transform.getOrigin().y()*1000;
+      Rotation.at<float>(2, 2) = transform.getOrigin().z()*1000;
+      // std::cout << "cmoplete:" << Rotation << std::endl;
 
       ///// calcurate center x-y-z point in real world
       calc = (Ap * Rotation).inv() * uv_center;
