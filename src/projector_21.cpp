@@ -54,7 +54,7 @@ void Callback(const std_msgs::Int16& msg)
 
     ///// rojector inner parameter
     const cv::Mat Ap = (cv::Mat_<float>(3, 3) << 2145.37932 ,  0.00000000 ,  495.015557,
-                                                       0.00000000 ,  2055.54230 ,  457.250515,
+                                                       0.00000000 ,  2055.54230 ,  557.250515,   //457.250515
                                                       0.00000000 ,  0.00000000 ,  1.00000000);
     // std::cout << "M = "<< std::endl << " "  << Ap << std::endl << std::endl;
 
