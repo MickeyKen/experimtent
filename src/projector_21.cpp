@@ -25,7 +25,7 @@ void Callback(const std_msgs::Int16& msg)
 
   if (exp_num == 21) {
     ///// decide image size in real world
-    float size = 300 / 2;
+    float size = 800 / 2;
     ///// get image and resize projectr size
     std::string file_dir = ros::package::getPath("experiment_miki") + "/src/image/";
     std::string input_file_path = file_dir + "pop_90.png";
@@ -56,7 +56,7 @@ void Callback(const std_msgs::Int16& msg)
 
     ///// rojector inner parameter
     const cv::Mat Ap = (cv::Mat_<float>(3, 3) << 2145.37932 ,  0.00000000 ,  495.015557,
-                                                       0.00000000 ,  2055.54230 ,  457.250515,   //457.250515
+                                                       0.00000000 ,  2055.54230 ,  800.250515,   //457.250515
                                                       0.00000000 ,  0.00000000 ,  1.00000000);
     // std::cout << "M = "<< std::endl << " "  << Ap << std::endl << std::endl;
 
