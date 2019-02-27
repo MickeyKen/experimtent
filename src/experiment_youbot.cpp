@@ -7,53 +7,28 @@
 int main(int argc, char** argv){
   ros::init(argc, argv, "map_ud_base_footprint_listener");
   ros::NodeHandle node;
-  ros::Rate rate(1.0);
+  ros::Rate rate(10.0);
 
   tf::TransformListener listener;
-  tf::StampedTransform tfTransform;
-  tf::Vector3 origin;
-  tf::Quaternion rotation;
-  tf::Vector3 axis;
-
-  static ros::Publisher publisher =
-    node.advertise<geometry_msgs::TransformStamped>("/odom2map_transform",
-                            10);
-
-  geometry_msgs::TransformStamped geoTransform;
-
-  int seq = 0;
-  geoTransform.header.frame_id = "map";
-  geoTransform.child_frame_id = "ud_base_footprint";
+  tf::StampedTransform transform;
 
   while(node.ok()) {
     try {
-      listener.lookupTransform(geoTransform.header.frame_id,
-                   geoTransform.child_frame_id,
+      listener.lookupTransform("map",
+                   "ud_base_footprint",
                    ros::Time(0),
-                   tfTransform);
+                   transform);
     }
     catch(tf::TransformException &exception) {
       ROS_ERROR("%s", exception.what());
     }
 
-    origin = tfTransform.getOrigin();
-    rotation = tfTransform.getRotation();
-    axis = rotation.getAxis();
 
-    geoTransform.header.seq = seq;
-    geoTransform.header.stamp = tfTransform.stamp_;
+    std::cout << "T = "<< std::endl << " "  << transform.getOrigin() << std::endl << std::endl;
+    std::cout << "R = "<< std::endl << " "  << transform.getRotation() << std::endl << std::endl;
 
-    geoTransform.transform.translation.x = origin.x();
-    geoTransform.transform.translation.y = origin.y();
-    geoTransform.transform.translation.z = origin.z();
 
-    geoTransform.transform.rotation.x = axis.x();
-    geoTransform.transform.rotation.y = axis.y();
-    geoTransform.transform.rotation.z = axis.z();
-    geoTransform.transform.rotation.w = rotation.getW();
 
-    seq++;
-    publisher.publish(geoTransform);
     rate.sleep();
   }
 
