@@ -36,8 +36,8 @@ void Callback(const std_msgs::Int16& msg)
 
 
     ///// set window fullscreen
-    // cv::namedWindow( "screen_4", CV_WINDOW_NORMAL );
-    // cv::setWindowProperty("screen_4",CV_WND_PROP_FULLSCREEN,CV_WINDOW_FULLSCREEN);
+    cv::namedWindow( "screen_4", CV_WINDOW_NORMAL );
+    cv::setWindowProperty("screen_4",CV_WND_PROP_FULLSCREEN,CV_WINDOW_FULLSCREEN);
 
 
     ///// BEFORE homography
@@ -56,7 +56,7 @@ void Callback(const std_msgs::Int16& msg)
 
     ///// rojector inner parameter
     const cv::Mat Ap = (cv::Mat_<float>(3, 3) << 2145.37932 ,  0.00000000 ,  495.015557,
-                                                       0.00000000 ,  2055.54230 ,  657.250515,   //457.250515
+                                                       0.00000000 ,  2055.54230 ,  457.250515,   //457.250515
                                                       0.00000000 ,  0.00000000 ,  1.00000000);
     // std::cout << "M = "<< std::endl << " "  << Ap << std::endl << std::endl;
 
