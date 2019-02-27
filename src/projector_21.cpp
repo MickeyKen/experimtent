@@ -25,7 +25,7 @@ void Callback(const std_msgs::Int16& msg)
 
   if (exp_num == 21) {
     ///// decide image size in real world
-    float size = 100 / 2;
+    float size = 300 / 2;
     ///// get image and resize projectr size
     std::string file_dir = ros::package::getPath("experiment_miki") + "/src/image/";
     std::string input_file_path = file_dir + "pop_90.png";
