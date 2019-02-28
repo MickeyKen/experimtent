@@ -172,7 +172,10 @@ class Control():
             if (x == 0.0):
                 pass
             else:
-                self.vel_msg.linear.x = 0.4
+                if (x > 0.0):
+                    self.vel_msg.linear.x = 0.4
+                else:
+                    self.vel_msg.linear.x = -0.4
                 self.pub_vel.publish(self.vel_msg)
                 while( current_x_distance < x):
                     (position, rotation) = self.get_odom()
@@ -180,10 +183,14 @@ class Control():
                     self.r.sleep()
                 self.vel_msg.linear.x = 0.0
                 self.pub_vel.publish(self.vel_msg)
+
             if (y == 0.0):
                 pass
             else:
-                self.vel_msg.linear.y = 0.3
+                if (y > 0.0):
+                    self.vel_msg.linear.y = 0.3
+                else:
+                    self.vel_msg.linear.y = -0.3
                 self.pub_vel.publish(self.vel_msg)
                 while( current_y_distance < y):
                     (position, rotation) = self.get_odom()
@@ -195,7 +202,10 @@ class Control():
             if (y == 0.0):
                 pass
             else:
-                self.vel_msg.linear.y = 0.3
+                if (y > 0.0):
+                    self.vel_msg.linear.y = 0.3
+                else:
+                    self.vel_msg.linear.y = -0.3
                 self.pub_vel.publish(self.vel_msg)
                 while( current_y_distance < y):
                     (position, rotation) = self.get_odom()
@@ -206,7 +216,10 @@ class Control():
             if (x == 0.0):
                 pass
             else:
-                self.vel_msg.linear.x = 0.4
+                if (x > 0.0):
+                    self.vel_msg.linear.x = 0.4
+                else:
+                    self.vel_msg.linear.x = -0.4
                 self.pub_vel.publish(self.vel_msg)
                 while( current_x_distance < x):
                     (position, rotation) = self.get_odom()
