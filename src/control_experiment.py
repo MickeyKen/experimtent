@@ -61,6 +61,7 @@ class Control():
             a = input("Input exp_num: >>")
             # print a
             current_pos = rospy.get_param("exp_pos")
+            rospy.set_param("/exp_miki_img/switch", 0)
 
             pub_pan.publish(float_pan)
             pub_tilt.publish(float_tilt)
@@ -177,7 +178,7 @@ class Control():
                 else:
                     self.vel_msg.linear.x = -0.4
                 self.pub_vel.publish(self.vel_msg)
-                while( current_x_distance < x):
+                while( current_x_distance < abs(x)):
                     (position, rotation) = self.get_odom()
                     current_x_distance = sqrt(pow((position.x - initial_x), 2))
                     self.r.sleep()
@@ -192,7 +193,7 @@ class Control():
                 else:
                     self.vel_msg.linear.y = -0.3
                 self.pub_vel.publish(self.vel_msg)
-                while( current_y_distance < y):
+                while( current_y_distance < abs(y)):
                     (position, rotation) = self.get_odom()
                     current_y_distance = sqrt(pow((position.y - initial_y), 2))
                     self.r.sleep()
@@ -207,7 +208,7 @@ class Control():
                 else:
                     self.vel_msg.linear.y = -0.3
                 self.pub_vel.publish(self.vel_msg)
-                while( current_y_distance < y):
+                while( current_y_distance < abs(y)):
                     (position, rotation) = self.get_odom()
                     current_y_distance = sqrt(pow((position.y - initial_y), 2))
                     self.r.sleep()
@@ -221,7 +222,7 @@ class Control():
                 else:
                     self.vel_msg.linear.x = -0.4
                 self.pub_vel.publish(self.vel_msg)
-                while( current_x_distance < x):
+                while( current_x_distance < abs(x)):
                     (position, rotation) = self.get_odom()
                     current_x_distance = sqrt(pow((position.x - initial_x), 2))
                     self.r.sleep()
