@@ -153,10 +153,10 @@ add_executable(proj_22 src/projector_22.cpp)
 target_link_libraries(proj_22 ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 add_executable(proj_23 src/projector_23.cpp)
 target_link_libraries(proj_23 ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
-add_executable(proj_24 src/projector_24.cpp)
-target_link_libraries(proj_24 ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 add_executable(exp_youbot src/experiment_youbot.cpp)
 target_link_libraries(exp_youbot ${catkin_LIBRARIES})
+add_executable(proj_24 src/projector_24.cpp)
+target_link_libraries(proj_24 ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure

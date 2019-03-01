@@ -198,7 +198,7 @@ int main(int argc, char **argv)
   ros::init(argc, argv, "exp_for_69_cpp");
 
   ros::NodeHandle n;
-
+  
   ros::Subscriber sub = n.subscribe("finish_pantilt", 1000, &Callback);
 
   ros::Rate rate(30);
