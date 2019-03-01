@@ -23,7 +23,7 @@ void Callback(const std_msgs::Int16& msg)
   n.setParam("exp_miki_img/switch", 1);
 
 
-  if (exp_num == 4 || exp_num == 5 || exp_num == 6) {
+  if (exp_num == 7 || exp_num == 8) {
     ///// decide image size in real world
     float size = 800 / 2;
     ///// get image and resize projectr size
@@ -195,7 +195,7 @@ void Callback(const std_msgs::Int16& msg)
 int main(int argc, char **argv)
 {
 
-  ros::init(argc, argv, "exp_or_456_cpp");
+  ros::init(argc, argv, "exp_for_78_cpp");
 
   ros::NodeHandle n;
 
