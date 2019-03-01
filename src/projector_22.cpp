@@ -199,8 +199,6 @@ int main(int argc, char **argv)
 
   ros::NodeHandle n;
 
-
-  n.setParam("/exp_num", 1);
   ros::Subscriber sub = n.subscribe("finish_pantilt", 1000, &Callback);
 
   ros::Rate rate(30);
