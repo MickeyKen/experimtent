@@ -23,12 +23,12 @@ void Callback(const std_msgs::Int16& msg)
   n.setParam("exp_miki_img/switch", 1);
 
 
-  if (exp_num == 6 || exp_num == 9) {
+  if (exp_num == 6 || exp_num == 9 || exp_num == 12) {
     ///// decide image size in real world
     float size = 800 / 2;
     ///// get image and resize projectr size
     std::string file_dir = ros::package::getPath("experiment_miki") + "/src/image/";
-    std::string input_file_path = file_dir + "pop_90.png";
+    std::string input_file_path = file_dir + "exp4.png";
     cv::Mat source_img = cv::imread(input_file_path, cv::IMREAD_UNCHANGED);
     int ColumnOfNewImage = 1024;
     int RowsOfNewImage = 768;
@@ -195,7 +195,7 @@ void Callback(const std_msgs::Int16& msg)
 int main(int argc, char **argv)
 {
 
-  ros::init(argc, argv, "exp_for_69_cpp");
+  ros::init(argc, argv, "exp_for_6912_cpp");
 
   ros::NodeHandle n;
 

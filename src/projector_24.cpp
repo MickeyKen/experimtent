@@ -28,7 +28,7 @@ void Callback(const std_msgs::Int16& msg)
     float size = 800 / 2;
     ///// get image and resize projectr size
     std::string file_dir = ros::package::getPath("experiment_miki") + "/src/image/";
-    std::string input_file_path = file_dir + "pop_90.png";
+    std::string input_file_path = file_dir + "exp3_180.png";
     cv::Mat source_img = cv::imread(input_file_path, cv::IMREAD_UNCHANGED);
     int ColumnOfNewImage = 1024;
     int RowsOfNewImage = 768;
