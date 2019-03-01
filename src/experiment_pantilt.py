@@ -42,11 +42,11 @@ def callback(data):
     # fast
 elif (exp_num == 10 or exp_num  == 11 or exp_num == 12):
         if exp_num == 10:
-            tilt_speed= 2.4
+            tilt_speed= 2.52
         elif exp_num == 11:
-            tilt_speed= 1.38
+            tilt_speed= 1.44
         else:
-            tilt_speed= 0.88
+            tilt_speed= 1.08
 
     set_tilt_speed = rospy.ServiceProxy('/tilt_controller/set_speed', SetSpeed)
     set_tilt_speed(tilt_speed)
