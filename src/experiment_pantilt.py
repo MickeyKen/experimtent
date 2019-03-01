@@ -20,23 +20,33 @@ def callback(data):
     if (exp_num == 1 or exp_num == 2 or exp_num == 3):
         tilt_speed= 0.5
 
+    # slow
     elif (exp_num == 4 or exp_num  == 5 or exp_num == 6):
         if exp_num == 4:
-            tilt_speed= 0.5
+            tilt_speed= 0.06
         elif exp_num == 5:
-            tilt_speed= 0.5
+            tilt_speed= 0.06
         else:
-            tilt_speed= 0.5
+            tilt_speed= 0.06
 
+    # mediaum
     elif (exp_num == 7 or exp_num == 8 or exp_num == 9):
         if exp_num == 7:
-            tilt_speed= 0.5
+            tilt_speed= 1.26
         elif exp_num == 8:
-            tilt_speed= 0.5
+            tilt_speed= 0.72
         else:
-            tilt_speed= 0.5
+            tilt_speed= 0.54
     else:
         pass
+    # fast
+elif (exp_num == 10 or exp_num  == 11 or exp_num == 12):
+        if exp_num == 10:
+            tilt_speed= 2.4
+        elif exp_num == 11:
+            tilt_speed= 1.38
+        else:
+            tilt_speed= 0.88
 
     set_tilt_speed = rospy.ServiceProxy('/tilt_controller/set_speed', SetSpeed)
     set_tilt_speed(tilt_speed)
