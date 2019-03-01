@@ -50,11 +50,6 @@ def callback(data):
 
 def experiment_pantilt():
 
-    # In ROS, nodes are uniquely named. If two nodes with the same
-    # name are launched, the previous one is kicked off. The
-    # anonymous=True flag means that rospy will choose a unique
-    # name for our 'listener' node so that multiple listeners can
-    # run simultaneously.
     rospy.init_node('experiment_for_pantilt', anonymous=True)
 
     rospy.Subscriber("finish_pantilt", Int16, callback)
