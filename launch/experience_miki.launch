@@ -1,6 +1,6 @@
 <launch>
-    <node pkg="experiment_miki" name="projector_456" type="proj_21" output="screen"/>
-    <node pkg="experiment_miki" name="projector_7" type="projector_7.py" output="screen"/>
+    <node pkg="experiment_miki" name="projector_45" type="proj_21" output="screen"/>
+    <node pkg="experiment_miki" name="projector_78" type="proj_22" output="screen"/>
 
 
     <node pkg="experiment_miki" name="pantilt" type="pantilt.py" output="screen"/>
