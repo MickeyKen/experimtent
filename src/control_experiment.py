@@ -87,7 +87,7 @@ class Control():
                 pantilt_message.speed.y = 0.5
                 pantilt_message.speed.z = 0.0
                 pantilt_message.position.x = 0.0
-                pantilt_message.position.y = 1.2
+                pantilt_message.position.y = 1.1
                 pantilt_message.position.z = 0.0
                 pantilt_radian_pub.publish(pantilt_message)
 
@@ -111,7 +111,7 @@ class Control():
                 pantilt_message.speed.y = 0.5
                 pantilt_message.speed.z = 0.0
                 pantilt_message.position.x = -0.78
-                pantilt_message.position.y = 1.2
+                pantilt_message.position.y = 1.1
                 pantilt_message.position.z = 0.0
                 pantilt_radian_pub.publish(pantilt_message)
 
@@ -136,7 +136,7 @@ class Control():
                 pantilt_message.speed.y = 0.5
                 pantilt_message.speed.z = 0.0
                 pantilt_message.position.x = -2.35
-                pantilt_message.position.y = 0.72
+                pantilt_message.position.y = 1.1
                 pantilt_message.position.z = 0.0
                 pantilt_radian_pub.publish(pantilt_message)
 
