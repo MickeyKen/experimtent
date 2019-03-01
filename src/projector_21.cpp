@@ -36,8 +36,8 @@ void Callback(const std_msgs::Int16& msg)
 
 
     ///// set window fullscreen
-    cv::namedWindow( "screen_4", CV_WINDOW_NORMAL );
-    cv::setWindowProperty("screen_4",CV_WND_PROP_FULLSCREEN,CV_WINDOW_FULLSCREEN);
+    cv::namedWindow( "screen_21", CV_WINDOW_NORMAL );
+    cv::setWindowProperty("screen_21",CV_WND_PROP_FULLSCREEN,CV_WINDOW_FULLSCREEN);
 
 
     ///// BEFORE homography
@@ -180,14 +180,14 @@ void Callback(const std_msgs::Int16& msg)
       cv::Mat M = cv::getPerspectiveTransform(src_pt,dst_pt);
       cv::warpPerspective( source_img, warp_img, M, source_img.size());
       // std::cout << "g = "<< std::endl << " "  << M << std::endl << std::endl;
-      cv::imshow("screen_4", warp_img);
+      cv::imshow("screen_21", warp_img);
       cv::waitKey(1);
       //printf("finish");
       rate.sleep();
     }
 
 
-    cv::destroyWindow("screen_4");
+    cv::destroyWindow("screen_21");
   }
 
 
