@@ -140,6 +140,16 @@ class Control():
                 pantilt_radian_pub.publish(pantilt_message)
 
 
+            elif a == 10:
+                rospy.set_param("/exp_num",a)
+                self.move(current_pos, 3, 0.3, 0.3)
+                rospy.set_param("/exp_pos",10)
+
+            elif a == 11:
+                rospy.set_param("/exp_num",a)
+                self.move(current_pos, 3, -0.3, -0.3)
+                rospy.set_param("/exp_pos",11)
+
             elif a == 0:
                 sys.exit()
             else:
@@ -174,9 +184,9 @@ class Control():
                 pass
             else:
                 if (x > 0.0):
-                    self.vel_msg.linear.x = 0.4
+                    self.vel_msg.linear.x = 0.3
                 else:
-                    self.vel_msg.linear.x = -0.4
+                    self.vel_msg.linear.x = -0.3
                 self.pub_vel.publish(self.vel_msg)
                 while( current_x_distance < abs(x)):
                     (position, rotation) = self.get_odom()
@@ -184,6 +194,8 @@ class Control():
                     self.r.sleep()
                 self.vel_msg.linear.x = 0.0
                 self.pub_vel.publish(self.vel_msg)
+
+            time.sleep(2)
 
             if (y == 0.0):
                 pass
@@ -214,13 +226,16 @@ class Control():
                     self.r.sleep()
                 self.vel_msg.linear.y = 0.0
                 self.pub_vel.publish(self.vel_msg)
+
+            time.sleep(2)
+
             if (x == 0.0):
                 pass
             else:
                 if (x > 0.0):
-                    self.vel_msg.linear.x = 0.4
+                    self.vel_msg.linear.x = 0.3
                 else:
-                    self.vel_msg.linear.x = -0.4
+                    self.vel_msg.linear.x = -0.3
                 self.pub_vel.publish(self.vel_msg)
                 while( current_x_distance < abs(x)):
                     (position, rotation) = self.get_odom()
