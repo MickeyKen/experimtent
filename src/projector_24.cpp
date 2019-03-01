@@ -122,7 +122,7 @@ void Callback(const std_msgs::Int16& msg)
       m.getRPY(roll, pitch, yaw);
       // std::cout << "Roll: " << roll << ", Pitch: " << pitch << ", Yaw: " << yaw << std::endl;
 
-      if (yaw < 2.2000) {
+      if (roll < 2.1000 && roll > 1.9000) {
 
         ///// calcurate Rotation Matrix
         // insert Rotation matrix for X
@@ -186,6 +186,7 @@ void Callback(const std_msgs::Int16& msg)
         cv::waitKey(1);
 
       }
+
 
 
       //printf("finish");

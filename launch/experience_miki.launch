@@ -1,4 +1,5 @@
 <launch>
+    <node pkg="experiment_miki" name="projector_12" type="proj_24" output="screen"/>
     <node pkg="experiment_miki" name="projector_45" type="proj_21" output="screen"/>
     <node pkg="experiment_miki" name="projector_78" type="proj_22" output="screen"/>
     <node pkg="experiment_miki" name="projector_69" type="proj_23" output="screen"/>
