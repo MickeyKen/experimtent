@@ -14,6 +14,9 @@ from math import radians, copysign, sqrt, pow, pi
 class Control():
     def __init__(self):
 
+        pantilt_radian_pub = rospy.Publisher('pantilt_radian_msg', Pantilt, queue_size=10)
+        pantilt_message = Pantilt()
+
         rospy.init_node('exp_control', anonymous=True)
 
         self.pub_vel = rospy.Publisher('cmd_vel',Twist, queue_size=10)
@@ -46,11 +49,9 @@ class Control():
         exp_pos = 1
         current_pos = 1
 
-        pantilt_radian_pub = rospy.Publisher('pantilt_radian_msg', Pantilt, queue_size=10)
         pub_pan = rospy.Publisher('pan_controller/command', Float64, queue_size=10)
         pub_tilt = rospy.Publisher('tilt_controller/command', Float64, queue_size=10)
 
-        pantilt_message = Pantilt()
         float_pan = Float64()
         float_tilt = Float64()
 
@@ -73,10 +74,10 @@ class Control():
                 if (current_pos == 1):
                     pass
                 elif (current_pos == 2):
-                    self.move(current_pos, 1, -2.5, -1.0)
+                    self.move(current_pos, 1, 2.5, -1.0)
 
                 elif (current_pos == 3):
-                    self.move(current_pos, 1, -2.5, -3.7)
+                    self.move(current_pos, 1, 2.5, -3.7)
 
                 else:
                     pass
@@ -86,7 +87,7 @@ class Control():
                 pantilt_message.speed.y = 0.5
                 pantilt_message.speed.z = 0.0
                 pantilt_message.position.x = 0.0
-                pantilt_message.position.y = 0.72
+                pantilt_message.position.y = 1.1
                 pantilt_message.position.z = 0.0
                 pantilt_radian_pub.publish(pantilt_message)
 
@@ -94,7 +95,7 @@ class Control():
                 rospy.set_param("/exp_num",a)
 
                 if (current_pos == 1):
-                    self.move(current_pos, 2, 2.5, 1.0)
+                    self.move(current_pos, 2, -2.5, 1.0)
 
                 elif (current_pos == 2):
                     pass
@@ -109,8 +110,8 @@ class Control():
                 pantilt_message.speed.x = 0.5
                 pantilt_message.speed.y = 0.5
                 pantilt_message.speed.z = 0.0
-                pantilt_message.position.x = 0.0
-                pantilt_message.position.y = 0.72
+                pantilt_message.position.x = -0.78
+                pantilt_message.position.y = 1.1
                 pantilt_message.position.z = 0.0
                 pantilt_radian_pub.publish(pantilt_message)
 
@@ -119,7 +120,7 @@ class Control():
                 rospy.set_param("/exp_num",a)
 
                 if (current_pos == 1):
-                    self.move(current_pos, 3, 2.5, 3.7)
+                    self.move(current_pos, 3, -2.5, 3.7)
 
                 elif (current_pos == 2):
                     self.move(current_pos, 3, 0.0, 2.7)
@@ -134,8 +135,8 @@ class Control():
                 pantilt_message.speed.x = 0.5
                 pantilt_message.speed.y = 0.5
                 pantilt_message.speed.z = 0.0
-                pantilt_message.position.x = 0.0
-                pantilt_message.position.y = 0.72
+                pantilt_message.position.x = -2.35
+                pantilt_message.position.y = 1.1
                 pantilt_message.position.z = 0.0
                 pantilt_radian_pub.publish(pantilt_message)
 
