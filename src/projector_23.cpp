@@ -23,7 +23,7 @@ void Callback(const std_msgs::Int16& msg)
   n.setParam("exp_miki_img/switch", 1);
 
 
-  if (exp_num == 7 || exp_num == 8) {
+  if (exp_num == 6 || exp_num == 9) {
     ///// decide image size in real world
     float size = 800 / 2;
     ///// get image and resize projectr size
@@ -198,7 +198,7 @@ int main(int argc, char **argv)
   ros::init(argc, argv, "exp_for_69_cpp");
 
   ros::NodeHandle n;
-  
+
   ros::Subscriber sub = n.subscribe("finish_pantilt", 1000, &Callback);
 
   ros::Rate rate(30);
