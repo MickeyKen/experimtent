@@ -25,7 +25,7 @@ class Control():
         self.position = Point()
         self.rotation = Quaternion()
         self.odom_frame = '/odom'
-        self.base_frame = '/ud_base_footprint'
+        self.base_frame = '/base_footprint'
 
         try:
             self.tf_listener.waitForTransform(self.odom_frame, self.base_frame, rospy.Time(), rospy.Duration(1.0))
