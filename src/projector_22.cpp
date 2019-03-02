@@ -36,8 +36,8 @@ void Callback(const std_msgs::Int16& msg)
 
 
     ///// set window fullscreen
-    // cv::namedWindow( "screen_22", CV_WINDOW_NORMAL );
-    // cv::setWindowProperty("screen_22",CV_WND_PROP_FULLSCREEN,CV_WINDOW_FULLSCREEN);
+    cv::namedWindow( "screen_22", CV_WINDOW_NORMAL );
+    cv::setWindowProperty("screen_22",CV_WND_PROP_FULLSCREEN,CV_WINDOW_FULLSCREEN);
 
 
     ///// BEFORE homography
