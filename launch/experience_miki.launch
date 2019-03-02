@@ -5,9 +5,6 @@
     <node pkg="experiment_miki" name="projector_78" type="proj_22" output="screen"/>
     <node pkg="experiment_miki" name="projector_69" type="proj_23" output="screen"/>
 
-
-    <node pkg="experiment_miki" name="pantilt" type="experiment_pantilt.py" output="screen"/>
-
     <node pkg="ubiquitous_display_projector" name="black_img" type="black_img.py" output="screen"/>
 
 </launch>
