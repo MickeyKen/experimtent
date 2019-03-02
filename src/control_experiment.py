@@ -68,7 +68,7 @@ class Control():
             pub_tilt.publish(float_tilt)
             time.sleep(1)
 
-            if a == 1 or a == 4 or a == 7:
+            if a == 1 or a == 4 or a == 7 or a == 10:
                 rospy.set_param("/exp_num",a)
 
                 if (current_pos == 1):
@@ -91,7 +91,7 @@ class Control():
                 pantilt_message.position.z = 0.0
                 pantilt_radian_pub.publish(pantilt_message)
 
-            elif a == 2 or a == 5 or a == 8:
+            elif a == 2 or a == 5 or a == 8 or a == 11:
                 rospy.set_param("/exp_num",a)
 
                 if (current_pos == 1):
@@ -116,14 +116,14 @@ class Control():
                 pantilt_radian_pub.publish(pantilt_message)
 
 
-            elif a == 3 or a == 6 or a == 9:
+            elif a == 3 or a == 6 or a == 9 or a ==12:
                 rospy.set_param("/exp_num",a)
 
                 if (current_pos == 1):
-                    self.move(current_pos, 3, -2.5, 3.7)
+                    self.move(current_pos, 3, 2.5, -3.7)
 
                 elif (current_pos == 2):
-                    self.move(current_pos, 3, 0.0, 2.7)
+                    self.move(current_pos, 3, 0.0, -2.7)
 
                 elif (current_pos == 3):
                     pass
@@ -140,16 +140,6 @@ class Control():
                 pantilt_message.position.z = 0.0
                 pantilt_radian_pub.publish(pantilt_message)
 
-
-            elif a == 10:
-                rospy.set_param("/exp_num",a)
-                self.move(current_pos, 3, 0.3, 0.3)
-                rospy.set_param("/exp_pos",10)
-
-            elif a == 11:
-                rospy.set_param("/exp_num",a)
-                self.move(current_pos, 3, -0.3, -0.3)
-                rospy.set_param("/exp_pos",11)
 
             elif a == 0:
                 sys.exit()
@@ -180,19 +170,22 @@ class Control():
         initial_x = position.x
         initial_y = position.y
 
+        self.vel_msg.linear.x = 0.0
+        self.vel_msg.linear.y = 0.0
+
+
         if curren_pos < target_pos:
             if (x == 0.0):
                 pass
             else:
-                if (x > 0.0):
-                    self.vel_msg.linear.x = 0.3
-                else:
-                    self.vel_msg.linear.x = -0.3
-                self.pub_vel.publish(self.vel_msg)
                 while( current_x_distance < abs(x)):
                     (position, rotation) = self.get_odom()
                     current_x_distance = sqrt(pow((position.x - initial_x), 2))
+                    if (self.vel_msg.linear.x >= -0.3):
+                        self.vel_msg.linear.x -= 0.03
+                    self.pub_vel.publish(self.vel_msg)
                     self.r.sleep()
+
                 self.vel_msg.linear.x = 0.0
                 self.pub_vel.publish(self.vel_msg)
 
@@ -201,30 +194,28 @@ class Control():
             if (y == 0.0):
                 pass
             else:
-                if (y > 0.0):
-                    self.vel_msg.linear.y = 0.3
-                else:
-                    self.vel_msg.linear.y = -0.3
-                self.pub_vel.publish(self.vel_msg)
                 while( current_y_distance < abs(y)):
                     (position, rotation) = self.get_odom()
                     current_y_distance = sqrt(pow((position.y - initial_y), 2))
+                    if (self.vel_msg.linear.y <= 0.3):
+                        self.vel_msg.linear.y += 0.03
+                    self.pub_vel.publish(self.vel_msg)
                     self.r.sleep()
+
                 self.vel_msg.linear.y = 0.0
                 self.pub_vel.publish(self.vel_msg)
         else:
             if (y == 0.0):
                 pass
             else:
-                if (y > 0.0):
-                    self.vel_msg.linear.y = 0.3
-                else:
-                    self.vel_msg.linear.y = -0.3
-                self.pub_vel.publish(self.vel_msg)
                 while( current_y_distance < abs(y)):
                     (position, rotation) = self.get_odom()
                     current_y_distance = sqrt(pow((position.y - initial_y), 2))
+                    if (self.vel_msg.linear.y >= -0.3):
+                        self.vel_msg.linear.y -= 0.03
+                    self.pub_vel.publish(self.vel_msg)
                     self.r.sleep()
+
                 self.vel_msg.linear.y = 0.0
                 self.pub_vel.publish(self.vel_msg)
 
@@ -233,15 +224,14 @@ class Control():
             if (x == 0.0):
                 pass
             else:
-                if (x > 0.0):
-                    self.vel_msg.linear.x = 0.3
-                else:
-                    self.vel_msg.linear.x = -0.3
-                self.pub_vel.publish(self.vel_msg)
                 while( current_x_distance < abs(x)):
                     (position, rotation) = self.get_odom()
                     current_x_distance = sqrt(pow((position.x - initial_x), 2))
+                    if (self.vel_msg.linear.x <= 0.3):
+                        self.vel_msg.linear.x += 0.03
+                    self.pub_vel.publish(self.vel_msg)
                     self.r.sleep()
+
                 self.vel_msg.linear.x = 0.0
                 self.pub_vel.publish(self.vel_msg)
 
