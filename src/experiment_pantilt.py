@@ -55,6 +55,10 @@ def callback(data):
 
     pub_tilt.publish(tilt_message)
 
+    time.sleep(3)
+    tilt_speed = 0.5
+    set_tilt_speed(tilt_speed)
+
 
 
 

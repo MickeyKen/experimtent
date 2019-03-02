@@ -58,6 +58,14 @@ class Control():
         rospy.set_param("/exp_num",exp_num)
         rospy.set_param("/exp_pos",exp_pos)
 
+        pantilt_message.speed.x = 0.5
+        pantilt_message.speed.y = 0.5
+        pantilt_message.speed.z = 0.0
+        pantilt_message.position.x = 0.0
+        pantilt_message.position.y = 1.1
+        pantilt_message.position.z = 0.0
+        pantilt_radian_pub.publish(pantilt_message)
+
         while True:
             a = input("Input exp_num: >>")
             # print a
@@ -66,7 +74,7 @@ class Control():
 
             pub_pan.publish(float_pan)
             pub_tilt.publish(float_tilt)
-            time.sleep(1)
+            time.sleep(6)
 
             if a == 1 or a == 4 or a == 7 or a == 10:
                 rospy.set_param("/exp_num",a)
