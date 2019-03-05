@@ -35,9 +35,7 @@ void Callback(const std_msgs::Int16& msg)
     resize(source_img, source_img, cv::Size(ColumnOfNewImage,RowsOfNewImage));
 
 
-    ///// set window fullscreen
-    cv::namedWindow( "screen_24", CV_WINDOW_NORMAL );
-    cv::setWindowProperty("screen_24",CV_WND_PROP_FULLSCREEN,CV_WINDOW_FULLSCREEN);
+
 
 
     ///// BEFORE homography
@@ -90,7 +88,7 @@ void Callback(const std_msgs::Int16& msg)
     cv::Mat calc = (cv::Mat_<float>(3,1) << 1.0, 1.0, 1.0);
 
     ///// prepare rate and tf
-    ros::Rate rate(30);
+    ros::Rate rate(20);
     tf::TransformListener listener;
 
 
@@ -122,7 +120,7 @@ void Callback(const std_msgs::Int16& msg)
       m.getRPY(roll, pitch, yaw);
       // std::cout << "Roll: " << roll << ", Pitch: " << pitch << ", Yaw: " << yaw << std::endl;
 
-      if (roll < 2.1000 && roll > 1.9000) {
+      if (roll < 2.3000 && roll > 2.25000) {
 
         ///// calcurate Rotation Matrix
         // insert Rotation matrix for X
@@ -158,7 +156,7 @@ void Callback(const std_msgs::Int16& msg)
 
         target.at<float>(0,0) = calc.at<float>(0,0) - size;
         target.at<float>(0,1) = calc.at<float>(1,0) + size;
-        target.at<float>(0,2) = 1.0;
+        target.at<float>(0,2) = 1.>0;
 
         target.at<float>(1,0) = calc.at<float>(0,0) + size;
         target.at<float>(1,1) = calc.at<float>(1,0) + size;
@@ -182,6 +180,9 @@ void Callback(const std_msgs::Int16& msg)
         cv::Mat M = cv::getPerspectiveTransform(src_pt,dst_pt);
         cv::warpPerspective( source_img, warp_img, M, source_img.size());
         // std::cout << "g = "<< std::endl << " "  << M << std::endl << std::endl;
+        ///// set window fullscreen
+        cv::namedWindow( "screen_24", CV_WINDOW_NORMAL );
+        cv::setWindowProperty("screen_24",CV_WND_PROP_FULLSCREEN,CV_WINDOW_FULLSCREEN);
         cv::imshow("screen_24", warp_img);
         cv::waitKey(1);
 
@@ -194,7 +195,7 @@ void Callback(const std_msgs::Int16& msg)
     }
 
 
-    cv::destroyWindow("screen_24");
+    cv::destroyAllWindows();
   }
 
 
@@ -208,7 +209,7 @@ int main(int argc, char **argv)
 
   ros::Subscriber sub = n.subscribe("finish_pantilt", 1000, &Callback);
 
-  ros::Rate rate(30);
+  ros::Rate rate(20);
 
   while(ros::ok()){
     ros::spinOnce();

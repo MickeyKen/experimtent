@@ -8,6 +8,7 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <tf/transform_datatypes.h>
+#include <unistd.h>
 
 int data_base = 0;
 void Callback(const std_msgs::Int16& msg)
@@ -23,17 +24,21 @@ void Callback(const std_msgs::Int16& msg)
   n.setParam("exp_miki_img/switch", 1);
 
 
-  if (exp_num == 3) {
+  if (exp_num == 1 || exp_num == 2) {
     ///// decide image size in real world
     float size = 800 / 2;
     ///// get image and resize projectr size
     std::string file_dir = ros::package::getPath("experiment_miki") + "/src/image/";
-    std::string input_file_path = file_dir + "exp5_180.png";
+    std::string input_file_path = file_dir + "exp2_180.png";
     cv::Mat source_img = cv::imread(input_file_path, cv::IMREAD_UNCHANGED);
     int ColumnOfNewImage = 1024;
     int RowsOfNewImage = 768;
     resize(source_img, source_img, cv::Size(ColumnOfNewImage,RowsOfNewImage));
 
+
+    ///// set window fullscreen
+    cv::namedWindow( "screen_26", CV_WINDOW_NORMAL );
+    cv::setWindowProperty("screen_26",CV_WND_PROP_FULLSCREEN,CV_WINDOW_FULLSCREEN);
 
 
     ///// BEFORE homography
@@ -102,7 +107,7 @@ void Callback(const std_msgs::Int16& msg)
       ///// get Rotation and Translation
       tf::StampedTransform transform;
       try {
-        listener.waitForTransform("/ud_pt_projector_optical_frame","/ud_base_footprint", ros::Time(0), ros::Duration(3.0));
+        listener.waitForTransform("/ud_pt_projector_optical_frame ","/ud_base_footprint", ros::Time(0), ros::Duration(3.0));
         listener.lookupTransform("/ud_pt_projector_optical_frame","/ud_base_footprint", ros::Time(0), transform);
 
       }
@@ -118,82 +123,72 @@ void Callback(const std_msgs::Int16& msg)
       m.getRPY(roll, pitch, yaw);
       // std::cout << "Roll: " << roll << ", Pitch: " << pitch << ", Yaw: " << yaw << std::endl;
 
-      if (roll < -2.1000  && roll > -2.3000 ) {
+      ///// calcurate Rotation Matrix
+      // insert Rotation matrix for X
+      rot_x.at<float>(1, 1) = cos(roll);
+      rot_x.at<float>(1, 2) = -sin(roll);
+      rot_x.at<float>(2, 1) = sin(roll);
+      rot_x.at<float>(2, 2) = cos(roll);
 
-        ///// calcurate Rotation Matrix
-        // insert Rotation matrix for X
-        rot_x.at<float>(1, 1) = cos(roll);
-        rot_x.at<float>(1, 2) = -sin(roll);
-        rot_x.at<float>(2, 1) = sin(roll);
-        rot_x.at<float>(2, 2) = cos(roll);
+      //insert Ritation matrix for y
+      rot_y.at<float>(0, 0) = cos(pitch);
+      rot_y.at<float>(0, 2) = sin(pitch);
+      rot_y.at<float>(2, 0) = -sin(pitch);
+      rot_y.at<float>(2, 2) = cos(pitch);
 
-        //insert Ritation matrix for y
-        rot_y.at<float>(0, 0) = cos(pitch);
-        rot_y.at<float>(0, 2) = sin(pitch);
-        rot_y.at<float>(2, 0) = -sin(pitch);
-        rot_y.at<float>(2, 2) = cos(pitch);
+      //insert Rotation matrix for z
+      rot_z.at<float>(0, 0) = cos(yaw);
+      rot_z.at<float>(0, 1) = -sin(yaw);
+      rot_z.at<float>(1, 0) = sin(yaw);
+      rot_z.at<float>(1, 1) = cos(yaw);
 
-        //insert Rotation matrix for z
-        rot_z.at<float>(0, 0) = cos(yaw);
-        rot_z.at<float>(0, 1) = -sin(yaw);
-        rot_z.at<float>(1, 0) = sin(yaw);
-        rot_z.at<float>(1, 1) = cos(yaw);
+      Rotation = rot_z * rot_y * rot_x;
 
-        Rotation = rot_z * rot_y * rot_x;
+      Rotation.at<float>(0, 2) = transform.getOrigin().x()*1000;
+      Rotation.at<float>(1, 2) = transform.getOrigin().y()*1000;
+      Rotation.at<float>(2, 2) = transform.getOrigin().z()*1000;
+      // std::cout << "cmoplete:" << Rotation << std::endl;
 
-        Rotation.at<float>(0, 2) = transform.getOrigin().x()*1000;
-        Rotation.at<float>(1, 2) = transform.getOrigin().y()*1000;
-        Rotation.at<float>(2, 2) = transform.getOrigin().z()*1000;
-        // std::cout << "cmoplete:" << Rotation << std::endl;
+      ///// calcurate center x-y-z point in real world
+      calc = (Ap * Rotation).inv() * uv_center;
 
-        ///// calcurate center x-y-z point in real world
-        calc = (Ap * Rotation).inv() * uv_center;
+      calc = calc / calc.at<float>(2,0);
+      // std::cout << "cmoplete:" << calc << std::endl;
 
-        calc = calc / calc.at<float>(2,0);
-        // std::cout << "cmoplete:" << calc << std::endl;
+      target.at<float>(0,0) = calc.at<float>(0,0) - size;
+      target.at<float>(0,1) = calc.at<float>(1,0) + size;
+      target.at<float>(0,2) = 1.0;
 
-        target.at<float>(0,0) = calc.at<float>(0,0) - size;
-        target.at<float>(0,1) = calc.at<float>(1,0) + size;
-        target.at<float>(0,2) = 1.0;
+      target.at<float>(1,0) = calc.at<float>(0,0) + size;
+      target.at<float>(1,1) = calc.at<float>(1,0) + size;
+      target.at<float>(1,2) = 1.0;
 
-        target.at<float>(1,0) = calc.at<float>(0,0) + size;
-        target.at<float>(1,1) = calc.at<float>(1,0) + size;
-        target.at<float>(1,2) = 1.0;
+      target.at<float>(2,0) = calc.at<float>(0,0) + size;
+      target.at<float>(2,1) = calc.at<float>(1,0) - size;
+      target.at<float>(2,2) = 1.0;
 
-        target.at<float>(2,0) = calc.at<float>(0,0) + size;
-        target.at<float>(2,1) = calc.at<float>(1,0) - size;
-        target.at<float>(2,2) = 1.0;
+      target.at<float>(3,0) = calc.at<float>(0,0) - size;
+      target.at<float>(3,1) = calc.at<float>(1,0) - size;
+      target.at<float>(3,2) = 1.0;
 
-        target.at<float>(3,0) = calc.at<float>(0,0) - size;
-        target.at<float>(3,1) = calc.at<float>(1,0) - size;
-        target.at<float>(3,2) = 1.0;
-
-        for (int i = 0; i < 4; i++) {
-          calc =  Ap * Rotation * target.row(i).t();
-          dst_pt[i].x = calc.at<float>(0,0) / calc.at<float>(2,0);
-          dst_pt[i].y = calc.at<float>(1,0) / calc.at<float>(2,0);
-          // printf("x: %f , y: %f", dst_pt[i].x, dst_pt[i].y);
-          // std::cout << "g = "<< std::endl << " "  << Ap * Rotation * target.row(i).t() << std::endl << std::endl;
-        }
-        cv::Mat M = cv::getPerspectiveTransform(src_pt,dst_pt);
-        cv::warpPerspective( source_img, warp_img, M, source_img.size());
-        // std::cout << "g = "<< std::endl << " "  << M << std::endl << std::endl;
-        ///// set window fullscreen
-        cv::namedWindow( "screen_25", CV_WINDOW_NORMAL );
-        cv::setWindowProperty("screen_25",CV_WND_PROP_FULLSCREEN,CV_WINDOW_FULLSCREEN);
-        cv::imshow("screen_25", warp_img);
-        cv::waitKey(1);
-
+      for (int i = 0; i < 4; i++) {
+        calc =  Ap * Rotation * target.row(i).t();
+        dst_pt[i].x = calc.at<float>(0,0) / calc.at<float>(2,0);
+        dst_pt[i].y = calc.at<float>(1,0) / calc.at<float>(2,0);
+        // printf("x: %f , y: %f", dst_pt[i].x, dst_pt[i].y);
+        // std::cout << "g = "<< std::endl << " "  << Ap * Rotation * target.row(i).t() << std::endl << std::endl;
       }
-
-
-
+      cv::Mat M = cv::getPerspectiveTransform(src_pt,dst_pt);
+      cv::warpPerspective( source_img, warp_img, M, source_img.size());
+      // std::cout << "g = "<< std::endl << " "  << M << std::endl << std::endl;
+      cv::imshow("screen_26", warp_img);
+      cv::waitKey(1);
       //printf("finish");
       rate.sleep();
     }
 
 
-    cv::destroyWindow("screen_25");
+    cv::destroyWindow("screen_26");
   }
 
 
@@ -201,7 +196,7 @@ void Callback(const std_msgs::Int16& msg)
 int main(int argc, char **argv)
 {
 
-  ros::init(argc, argv, "exp_for_3_cpp");
+  ros::init(argc, argv, "exp_for_666_cpp");
 
   ros::NodeHandle n;
 
