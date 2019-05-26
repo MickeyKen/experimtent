@@ -28,12 +28,16 @@ void Callback(const std_msgs::Int16& msg)
     float size = 800 / 2;
     ///// get image and resize projectr size
     std::string file_dir = ros::package::getPath("experiment_miki") + "/src/image/";
-    std::string input_file_path = file_dir + "exp5_180.png";
+    std::string input_file_path = file_dir + "exp5.png";
     cv::Mat source_img = cv::imread(input_file_path, cv::IMREAD_UNCHANGED);
     int ColumnOfNewImage = 1024;
     int RowsOfNewImage = 768;
     resize(source_img, source_img, cv::Size(ColumnOfNewImage,RowsOfNewImage));
 
+
+    ///// set window fullscreen
+    cv::namedWindow( "screen_25", CV_WINDOW_NORMAL );
+    cv::setWindowProperty("screen_25",CV_WND_PROP_FULLSCREEN,CV_WINDOW_FULLSCREEN);
 
 
     ///// BEFORE homography
@@ -86,7 +90,7 @@ void Callback(const std_msgs::Int16& msg)
     cv::Mat calc = (cv::Mat_<float>(3,1) << 1.0, 1.0, 1.0);
 
     ///// prepare rate and tf
-    ros::Rate rate(20);
+    ros::Rate rate(30);
     tf::TransformListener listener;
 
 
@@ -118,7 +122,7 @@ void Callback(const std_msgs::Int16& msg)
       m.getRPY(roll, pitch, yaw);
       // std::cout << "Roll: " << roll << ", Pitch: " << pitch << ", Yaw: " << yaw << std::endl;
 
-      if (roll < -2.1000  && roll > -2.3000 ) {
+      if (roll < 2.1000 && roll > 1.9000) {
 
         ///// calcurate Rotation Matrix
         // insert Rotation matrix for X
@@ -178,9 +182,6 @@ void Callback(const std_msgs::Int16& msg)
         cv::Mat M = cv::getPerspectiveTransform(src_pt,dst_pt);
         cv::warpPerspective( source_img, warp_img, M, source_img.size());
         // std::cout << "g = "<< std::endl << " "  << M << std::endl << std::endl;
-        ///// set window fullscreen
-        cv::namedWindow( "screen_25", CV_WINDOW_NORMAL );
-        cv::setWindowProperty("screen_25",CV_WND_PROP_FULLSCREEN,CV_WINDOW_FULLSCREEN);
         cv::imshow("screen_25", warp_img);
         cv::waitKey(1);
 
@@ -207,7 +208,7 @@ int main(int argc, char **argv)
 
   ros::Subscriber sub = n.subscribe("finish_pantilt", 1000, &Callback);
 
-  ros::Rate rate(20);
+  ros::Rate rate(30);
 
   while(ros::ok()){
     ros::spinOnce();

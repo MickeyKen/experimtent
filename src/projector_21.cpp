@@ -23,7 +23,7 @@ void Callback(const std_msgs::Int16& msg)
   n.setParam("exp_miki_img/switch", 1);
 
 
-  if (exp_num == 4 || exp_num == 5 || exp_num == 6) {
+  if (exp_num == 4 || exp_num == 5 || exp_num == 10) {
     ///// decide image size in real world
     float size = 800 / 2;
     ///// get image and resize projectr size
@@ -90,7 +90,7 @@ void Callback(const std_msgs::Int16& msg)
     cv::Mat calc = (cv::Mat_<float>(3,1) << 1.0, 1.0, 1.0);
 
     ///// prepare rate and tf
-    ros::Rate rate(20);
+    ros::Rate rate(30);
     tf::TransformListener listener;
 
 
@@ -201,7 +201,7 @@ int main(int argc, char **argv)
 
   ros::Subscriber sub = n.subscribe("finish_pantilt", 1000, &Callback);
 
-  ros::Rate rate(20);
+  ros::Rate rate(30);
 
   while(ros::ok()){
     ros::spinOnce();
