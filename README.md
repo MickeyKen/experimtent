@@ -8,7 +8,7 @@ roslaunch ubiquitous_display_pantilt start_pantilt.launch
 
 roslaunch experiment_miki prepare.launch
 
-roslaunch experiment_miki exp_miki.launch
+roslaunch experiment_miki exp_ver1.launch
 
 rosrun experiment_miki start_exp.py $(exp_num)
 
@@ -32,9 +32,7 @@ roslaunch youbot_driver_ros_interface youbot_driver_for_ud.launch
 
 roslaunch experiment_miki prepare.launch
 
-roslaunch experiment_miki experience_miki.launch
-
-rosrun experiment_miki experiment_pantilt.py
+roslaunch experiment_miki exp_ver2.launch
 
 rosrun experiment_miki control_experience.py
 
