@@ -4,6 +4,7 @@
 
     <node pkg="ubiquitous_display_pantilt" name="control_pantilt_radian" type="control_pantilt_radian.py" output="screen" />
 
-    <node pkg="experiment_miki" name="pantilt_for_exp_ver2" type="experiment_pantilt.py"
+    <node pkg="experiment_miki" name="pantilt_for_exp_ver2" type="experiment_pantilt.py"/>
+
 
 </launch>
